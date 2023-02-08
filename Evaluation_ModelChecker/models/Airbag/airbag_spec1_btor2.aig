@@ -1,0 +1,278 @@
+aig 570 38 72 0 460 1 50
+224 1
+227 1
+238
+241
+242
+287
+292
+295
+296
+325
+330
+333
+0
+0 1
+340
+343
+346 1
+349 1
+350
+365 1
+373 1
+379 1
+403
+417
+418
+423
+455
+463 1
+469 1
+551
+563
+577
+591
+605
+631
+697
+717
+737
+759
+793 1
+809 1
+814
+817
+818
+837
+857
+871
+872 1
+875 1
+876
+907
+912
+915
+933
+945
+955
+963
+969 1
+975 1
+980
+983
+984
+1005
+1010
+1013
+1019 1
+1025 1
+1026
+1031
+1061
+1067 1
+1073 1
+1102
+103
+1110
+115
+123
+169
+181
+205
+1114
+83
+107
+1118
+165
+924
+1122
+99
+95
+91
+87
+161
+177
+1125
+197
+201
+1127
+1129
+1131
+1133
+1135
+1137
+1139
+1141
+3
+7
+11
+15
+19
+23
+27
+31
+35
+39
+43
+47
+51
+55
+59
+63
+67
+71
+75
+éïí{8Çõòî
+íObB?@("d,00( 5…∆>å@äZ)J":4R*VVH[Á‰åjeÈÊËøºtxvvÊ∫É~
+ˆÃ— 	œíp~¯éá¢Ü§™nˆÑ≤
+∏l∫j∏æhF√»ÖbÀ–T—÷◊◊¬ÇáÄ	Öƒ»Ã–‘‘◊’’’‚£–Íí≤	ú	¸˘˘˘˘™áÜÜÜÜ∂≥ô50(ó[ÃZ>5ïk»jLC(+ìΩzZQ69ëfÂNÖ———ÇÑslPSèéVª¡√ö‹‡‚‚ÂÌˆ˜ãëì+»/0 >–Tò)(DDﬁ‰R"ñED%XXÚ¯Pd⁄8î¡`;nàéN€ öÍ—
+¢˜	
+Ú¨©∞LËı∫‚‰øçä»F Dﬂﬁπ∏€÷‹BòN‰º¡ÓÄÈ@∫ø¯
+Å¡ÉæÇ:Ñ8êö≠í
+®ò¨úú¥t°€ÿ™2ÿ‹‡‡ùµº0‹©¡».ú≥À“,Ω¬”ˆ†˜•¸û˝£ÏÂèåÓ" ÿ•¯‰ù–˛˛ÄäÉ•¢ ˆÀ˚–Ù—˘òövûú
+±®‡B∑ÆßΩ¥ëµ¢∆£À®ƒ©…è◊”œÎıë–LÄ¡√…ÃÄÑ⁄ﬁ»Ã≈ıÔª©õìÎ£i0 main__break__state_probabilisticAssignment_318[1]
+i1 main__break__state_probabilisticAssignment_318[0]
+i2 main__break__state_probabilisticAssignment_328[1]
+i3 main__break__state_probabilisticAssignment_328[0]
+i4 main__crash__state_probabilisticAssignment_337[1]
+i5 main__crash__state_probabilisticAssignment_337[0]
+i6 main__crash__state_probabilisticAssignment_342[1]
+i7 main__crash__state_probabilisticAssignment_342[0]
+i8 main__error_airbag_defect__state_probabilisticAssignment_502[1]
+i9 main__error_airbag_defect__state_probabilisticAssignment_502[0]
+i10 main__error_airbag_defect__state_probabilisticAssignment_512[1]
+i11 main__error_airbag_defect__state_probabilisticAssignment_512[0]
+i12 main__error_mechSensor_defect__fail__state_probabilisticAssignment_541[1]
+i13 main__error_mechSensor_defect__fail__state_probabilisticAssignment_541[0]
+i14 main__error_mechSensor_wrong__fail__state_probabilisticAssignment_555[1]
+i15 main__error_mechSensor_wrong__fail__state_probabilisticAssignment_555[0]
+i16 main__error_mechSensor_wrong__fail__state_probabilisticAssignment_565[1]
+i17 main__error_mechSensor_wrong__fail__state_probabilisticAssignment_565[0]
+i18 main__error_magSensor_defect__fail__state_probabilisticAssignment_575[1]
+i19 main__error_magSensor_defect__fail__state_probabilisticAssignment_575[0]
+i20 main__error_magSensor_wrong__fail__state_probabilisticAssignment_587[1]
+i21 main__error_magSensor_wrong__fail__state_probabilisticAssignment_587[0]
+i22 main__error_magSensor_wrong__fail__state_probabilisticAssignment_597[1]
+i23 main__error_magSensor_wrong__fail__state_probabilisticAssignment_597[0]
+i24 main__error_crashDetectionA_wrong__fail__state_probabilisticAssignment_607[1]
+i25 main__error_crashDetectionA_wrong__fail__state_probabilisticAssignment_607[0]
+i26 main__error_crashDetectionA_wrong__fail__state_probabilisticAssignment_617[1]
+i27 main__error_crashDetectionA_wrong__fail__state_probabilisticAssignment_617[0]
+i28 main__error_crashDetectionB_wrong__fail__state_probabilisticAssignment_627[1]
+i29 main__error_crashDetectionB_wrong__fail__state_probabilisticAssignment_627[0]
+i30 main__error_crashDetectionB_wrong__fail__state_probabilisticAssignment_637[1]
+i31 main__error_crashDetectionB_wrong__fail__state_probabilisticAssignment_637[0]
+i32 main__error_crashDetectionMonitor_wrong__fail__state_probabilisticAssignment_647[1]
+i33 main__error_crashDetectionMonitor_wrong__fail__state_probabilisticAssignment_647[0]
+i34 main__error_crashDetectionMonitor_wrong__fail__state_probabilisticAssignment_657[1]
+i35 main__error_crashDetectionMonitor_wrong__fail__state_probabilisticAssignment_657[0]
+i36 main__error_airbag_selfIgnition__fail__state_probabilisticAssignment_667[1]
+i37 main__error_airbag_selfIgnition__fail__state_probabilisticAssignment_667[0]
+l0 main__error_airbag_selfIgnition__fail__state[1]
+l1 main__error_airbag_selfIgnition__fail__state[0]
+l2 main__error_magSensor_defect_Obs__state[1]
+l3 main__error_magSensor_defect_Obs__state[0]
+l4 main__crashDetectionB__state[1]
+l5 main__crashDetectionB__state[0]
+l6 main__error_crashDetectionB_wrong_Obs__state[1]
+l7 main__error_crashDetectionB_wrong_Obs__state[0]
+l8 main__crashDetectionA__state[1]
+l9 main__crashDetectionA__state[0]
+l10 main__error_crashDetectionA_wrong_Obs__state[1]
+l11 main__error_crashDetectionA_wrong_Obs__state[0]
+l12 __INITCOMP____state[1]
+l13 __INITCOMP____state[0]
+l14 main__error_magSensor_wrong_Obs__state[1]
+l15 main__error_magSensor_wrong_Obs__state[0]
+l16 main__error_mechSensor_defect__fail__state[1]
+l17 main__error_mechSensor_defect__fail__state[0]
+l18 main__drive__state[1]
+l19 main__drive__state[0]
+l20 main__error_mechSensor_wrong__fail__state[1]
+l21 main__error_mechSensor_wrong__fail__state[0]
+l22 main__break__state[1]
+l23 main__break__state[0]
+l24 main__magSensor__state[2]
+l25 main__magSensor__state[1]
+l26 main__magSensor__state[0]
+l27 main__error_crashDetectionMonitor_wrong__fail__state[1]
+l28 main__error_crashDetectionMonitor_wrong__fail__state[0]
+l29 main__airbag_observe__airbag_observe_state[5]
+l30 main__airbag_observe__airbag_observe_state[4]
+l31 main__airbag_observe__airbag_observe_state[3]
+l32 main__airbag_observe__airbag_observe_state[2]
+l33 main__airbag_observe__airbag_observe_state[1]
+l34 main__airbag_observe__airbag_observe_state[0]
+l35 main__ValidatorSum__ValidatorSum__P_STATE__sum__sum[3]
+l36 main__ValidatorSum__ValidatorSum__P_STATE__sum__sum[2]
+l37 main__ValidatorSum__ValidatorSum__P_STATE__sum__sum[1]
+l38 main__ValidatorSum__ValidatorSum__P_STATE__sum__sum[0]
+l39 main__error_airbag_defect__state[1]
+l40 main__error_airbag_defect__state[0]
+l41 main__error_crashDetectionMonitor_wrong_Obs__state[1]
+l42 main__error_crashDetectionMonitor_wrong_Obs__state[0]
+l43 main__SensorValidator__state[1]
+l44 main__SensorValidator__state[0]
+l45 main__crash__state[1]
+l46 main__crash__state[0]
+l47 main__error_magSensor_defect__fail__state[1]
+l48 main__error_magSensor_defect__fail__state[0]
+l49 main__crashDetectionMonitor__state[1]
+l50 main__crashDetectionMonitor__state[0]
+l51 main__error_mechSensor_defect_Obs__state[1]
+l52 main__error_mechSensor_defect_Obs__state[0]
+l53 main__ValidatorSum__ValidatorSum__P_STATE__counter__counter[3]
+l54 main__ValidatorSum__ValidatorSum__P_STATE__counter__counter[2]
+l55 main__ValidatorSum__ValidatorSum__P_STATE__counter__counter[1]
+l56 main__ValidatorSum__ValidatorSum__P_STATE__counter__counter[0]
+l57 main__error_magSensor_wrong__fail__state[1]
+l58 main__error_magSensor_wrong__fail__state[0]
+l59 main__error_airbag_selfIgnition_Obs__state[1]
+l60 main__error_airbag_selfIgnition_Obs__state[0]
+l61 main__airbag__state[1]
+l62 main__airbag__state[0]
+l63 main__error_mechSensor_wrong_Obs__state[1]
+l64 main__error_mechSensor_wrong_Obs__state[0]
+l65 main__error_crashDetectionA_wrong__fail__state[1]
+l66 main__error_crashDetectionA_wrong__fail__state[0]
+l67 main__mechSensor__state[2]
+l68 main__mechSensor__state[1]
+l69 main__mechSensor__state[0]
+l70 main__error_crashDetectionB_wrong__fail__state[1]
+l71 main__error_crashDetectionB_wrong__fail__state[0]
+c0 __INITCOMP____state[1]
+c2 main__drive__state[1]
+c3 main__break__state[1]
+c4 main__crash__state[1]
+c5 main__error_mechSensor_defect_Obs__state[1]
+c6 main__error_mechSensor_wrong_Obs__state[1]
+c8 main__error_magSensor_defect_Obs__state[1]
+c9 main__error_magSensor_wrong_Obs__state[1]
+c11 main__SensorValidator__state[1]
+c14 main__error_crashDetectionA_wrong_Obs__state[1]
+c15 main__crashDetectionA__state[1]
+c16 main__error_crashDetectionB_wrong_Obs__state[1]
+c17 main__crashDetectionB__state[1]
+c18 main__error_crashDetectionMonitor_wrong_Obs__state[1]
+c19 main__crashDetectionMonitor__state[1]
+c21 main__error_airbag_selfIgnition_Obs__state[1]
+c22 main__airbag__state[1]
+c31 main__break__state_probabilisticAssignment_318[1]
+c32 main__break__state_probabilisticAssignment_328[1]
+c33 main__crash__state_probabilisticAssignment_337[1]
+c34 main__crash__state_probabilisticAssignment_342[1]
+c35 main__error_airbag_defect__state_probabilisticAssignment_502[1]
+c36 main__error_airbag_defect__state_probabilisticAssignment_512[1]
+c37 main__error_mechSensor_defect__fail__state_probabilisticAssignment_541[1]
+c38 main__error_mechSensor_wrong__fail__state_probabilisticAssignment_555[1]
+c39 main__error_mechSensor_wrong__fail__state_probabilisticAssignment_565[1]
+c40 main__error_magSensor_defect__fail__state_probabilisticAssignment_575[1]
+c41 main__error_magSensor_wrong__fail__state_probabilisticAssignment_587[1]
+c42 main__error_magSensor_wrong__fail__state_probabilisticAssignment_597[1]
+c43 main__error_crashDetectionA_wrong__fail__state_probabilisticAssignment_607[1]
+c44 main__error_crashDetectionA_wrong__fail__state_probabilisticAssignment_617[1]
+c45 main__error_crashDetectionB_wrong__fail__state_probabilisticAssignment_627[1]
+c46 main__error_crashDetectionB_wrong__fail__state_probabilisticAssignment_637[1]
+c47 main__error_crashDetectionMonitor_wrong__fail__state_probabilisticAssignment_647[1]
+c48 main__error_crashDetectionMonitor_wrong__fail__state_probabilisticAssignment_657[1]
+c49 main__error_airbag_selfIgnition__fail__state_probabilisticAssignment_667[1]

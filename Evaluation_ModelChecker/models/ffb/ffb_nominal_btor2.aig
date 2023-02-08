@@ -1,0 +1,169 @@
+aig 632 12 56 0 564 1 24
+140 1
+143 1
+169
+179
+184
+187
+343
+351
+359
+367
+375
+383
+391
+399
+411
+423
+435
+0
+0 1
+438 1
+441 1
+442
+543 1
+553
+563
+573
+583
+645
+655
+665
+668 1
+671 1
+676
+679
+680
+779
+805
+827 1
+833 1
+877
+909
+941
+973
+1005
+1031
+1036
+1039
+1044
+1047
+1052
+1055
+1056
+1103
+1143
+1144 1
+1147 1
+1210
+61
+1214
+91
+1217
+117
+121
+125
+1219
+1221
+1223
+95
+1232
+129
+1250
+1260
+1263
+35
+1265
+3
+7
+11
+15
+19
+23
+nurRr[ä
+pà
+#ïí,jz|~ÄÇÇÇÇÇÇÖèô£"&≠,0µ6:Ω@D≈JNÕTX÷◊)(54A@UTQP"'¥-¡ò»h	( –f$“ÿd ⁄‡b!‚Ë`)Í^1Ò¯\9˙ÄZµ¥CÖåX…»OëòV€⁄[ùÚß§™L¨Jˆ*ˆ,ˆ.ˆ.˘.É,ç*ò(ô(®&©&+*±.<;:	%ˆ*¸ä`êH	ìöFù§D$ßÆB.'±ıÙÊ»ÚÔæÛ›‹Ãù	÷§°+‡Ï
+Øõ≠#ò´¬ïíT≤è…∆ò2ö0À ñ…«««‘
+äéíóöû£¶™≠ÌÎÎÎÎåØíŒ,“-ìY‹™‚ZÊ	ˆ^¸.b…ƒˆabX¶+#êø¬’ÃÊ≤—∞	œœ”◊€‡‡d6A´°=lq_
+gÓˇ'‹*‹àZe©≈aèñ# #˝IÿLÿ®zÖßÂÅØ∂C@C˚k‘n‘»ö•§Ü°–’c`c˘‹›Ë∫≈£•¡ÔˆÉÄÉ˜Ñ˜ÿ•ﬂ†¿€äèùöùıÓÄ˜óî¿∂ˇõò‰öáüúêí´Ù¯¸ÅÑâãú¬†Æ®Æ∫*¿∏ˆ€1Ùß´Ø≥πªÃ.4*(‚$ß«©ƒüáááÂ”Ÿ‹ﬂ„ÁÌÙ˜Ã˜ëÍÁÒ˜ˇÑäè,ËÏŸÈªÉ	÷⁄ﬂ‚ÊD◊ü	¢	ß	™	Æ	≤	∂	∫	ï	ô	ù	£	¶	Õ	”	i0 ffb__Communication__Control__ControlFail__fail__state_probabilisticAssignment_233[1]
+i1 ffb__Communication__Control__ControlFail__fail__state_probabilisticAssignment_233[0]
+i2 ffb__Barrier__Physics__ActuatorFail__fail__state_probabilisticAssignment_258[1]
+i3 ffb__Barrier__Physics__ActuatorFail__fail__state_probabilisticAssignment_258[0]
+i4 ffb__Barrier__Physics__CloseSensorFail__fail__state_probabilisticAssignment_272[1]
+i5 ffb__Barrier__Physics__CloseSensorFail__fail__state_probabilisticAssignment_272[0]
+i6 ffb__Barrier__Physics__PassSensorFail__fail__state_probabilisticAssignment_284[1]
+i7 ffb__Barrier__Physics__PassSensorFail__fail__state_probabilisticAssignment_284[0]
+i8 ffb__Train__Physics__Acceleration__value_nondetAssignment_387[1]
+i9 ffb__Train__Physics__Acceleration__value_nondetAssignment_387[0]
+i10 ffb__Train__Physics__BrakesFail__fail__state_probabilisticAssignment_405[1]
+i11 ffb__Train__Physics__BrakesFail__fail__state_probabilisticAssignment_405[0]
+l0 ffb__Train__Physics__BrakesFail__fail__state[1]
+l1 ffb__Train__Physics__BrakesFail__fail__state[0]
+l2 ffb__Train__Physics__Acceleration__value[1]
+l3 ffb__Train__Physics__Acceleration__value[0]
+l4 ffb__Train__Physics__BrakesFail_Obs__state[1]
+l5 ffb__Train__Physics__BrakesFail_Obs__state[0]
+l6 ffb__Train__Physics__Position__value[10]
+l7 ffb__Train__Physics__Position__value[9]
+l8 ffb__Train__Physics__Position__value[8]
+l9 ffb__Train__Physics__Position__value[7]
+l10 ffb__Train__Physics__Position__value[6]
+l11 ffb__Train__Physics__Position__value[5]
+l12 ffb__Train__Physics__Position__value[4]
+l13 ffb__Train__Physics__Position__value[3]
+l14 ffb__Train__Physics__Position__value[2]
+l15 ffb__Train__Physics__Position__value[1]
+l16 ffb__Train__Physics__Position__value[0]
+l17 __INITCOMP____state[1]
+l18 __INITCOMP____state[0]
+l19 ffb__Barrier__Physics__PassSensorFail__fail__state[1]
+l20 ffb__Barrier__Physics__PassSensorFail__fail__state[0]
+l21 ffb__Train__Physics__Velocity__value[5]
+l22 ffb__Train__Physics__Velocity__value[4]
+l23 ffb__Train__Physics__Velocity__value[3]
+l24 ffb__Train__Physics__Velocity__value[2]
+l25 ffb__Train__Physics__Velocity__value[1]
+l26 ffb__Train__Physics__Velocity__value[0]
+l27 ffb__Communication__state[2]
+l28 ffb__Communication__state[1]
+l29 ffb__Communication__state[0]
+l30 ffb__Barrier__Physics__ActuatorFail__fail__state[1]
+l31 ffb__Barrier__Physics__ActuatorFail__fail__state[0]
+l32 ffb__Communication__Control__ControlFail_Obs__state[1]
+l33 ffb__Communication__Control__ControlFail_Obs__state[0]
+l34 ffb__Barrier__Barrier__P_STATE__state__state[2]
+l35 ffb__Barrier__Barrier__P_STATE__state__state[1]
+l36 ffb__Barrier__Barrier__P_STATE__state__state[0]
+l37 ffb__Communication__Control__ControlFail__fail__state[1]
+l38 ffb__Communication__Control__ControlFail__fail__state[0]
+l39 ffb__Barrier__Barrier__P_STATE__timer__timer[5]
+l40 ffb__Barrier__Barrier__P_STATE__timer__timer[4]
+l41 ffb__Barrier__Barrier__P_STATE__timer__timer[3]
+l42 ffb__Barrier__Barrier__P_STATE__timer__timer[2]
+l43 ffb__Barrier__Barrier__P_STATE__timer__timer[1]
+l44 ffb__Barrier__Barrier__P_STATE__timer__timer[0]
+l45 ffb__Barrier__Physics__ActuatorFail_Obs__state[1]
+l46 ffb__Barrier__Physics__ActuatorFail_Obs__state[0]
+l47 ffb__Barrier__Physics__CloseSensorFail_Obs__state[1]
+l48 ffb__Barrier__Physics__CloseSensorFail_Obs__state[0]
+l49 ffb__Barrier__Physics__PassSensorFail_Obs__state[1]
+l50 ffb__Barrier__Physics__PassSensorFail_Obs__state[0]
+l51 ffb__Train__Control__state[2]
+l52 ffb__Train__Control__state[1]
+l53 ffb__Train__Control__state[0]
+l54 ffb__Barrier__Physics__CloseSensorFail__fail__state[1]
+l55 ffb__Barrier__Physics__CloseSensorFail__fail__state[0]
+c0 __INITCOMP____state[1]
+c2 ffb__Communication__Control__ControlFail_Obs__state[1]
+c4 ffb__Barrier__Physics__ActuatorFail_Obs__state[1]
+c5 ffb__Barrier__Physics__CloseSensorFail_Obs__state[1]
+c6 ffb__Barrier__Physics__PassSensorFail_Obs__state[1]
+c10 ffb__Barrier__Barrier__P_STATE__state__state[2]
+c12 ffb__Train__Control__state[2]
+c16 ffb__Train__Physics__BrakesFail_Obs__state[1]
+c18 ffb__Communication__Control__ControlFail__fail__state_probabilisticAssignment_233[1]
+c19 ffb__Barrier__Physics__ActuatorFail__fail__state_probabilisticAssignment_258[1]
+c20 ffb__Barrier__Physics__CloseSensorFail__fail__state_probabilisticAssignment_272[1]
+c21 ffb__Barrier__Physics__PassSensorFail__fail__state_probabilisticAssignment_284[1]
+c22 ffb__Train__Physics__Acceleration__value_nondetAssignment_387[1]
+c23 ffb__Train__Physics__BrakesFail__fail__state_probabilisticAssignment_405[1]

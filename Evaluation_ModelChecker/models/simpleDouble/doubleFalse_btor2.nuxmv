@@ -1,0 +1,5 @@
+read_model -i doubleFalse_btor2.aig
+encode_variables
+build_boolean_model
+check_invar_ic3 -m4 -O2 
+quit

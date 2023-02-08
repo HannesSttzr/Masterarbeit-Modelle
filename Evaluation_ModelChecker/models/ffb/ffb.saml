@@ -1,0 +1,290 @@
+component ffb
+    /*
+    technical model specifications:
+      - temporal resolution: 5s
+      - railroad track length: 10km
+      - distance quantization: 10m
+      - maximum train speed: 16 (i.e. 32m/s i.e. 115.2km/h)
+    */
+
+	//absolute positions
+	constant int pos_crossing := 900;
+	constant int pos_sensor_passed := 950;
+	
+	//failure probabilities
+	constant double p_close_sensor_fails := 3.5e-8;
+	constant double p_pass_sensor_fails := 3.5e-8;
+	constant double p_brakes_fail := 3.5e-8;
+	constant double p_comm_fails := 3.5e-5;
+	constant double p_act_fails := 3.5e-8;
+
+	//helper constants
+	/* maximum velocity; used to make safety estimates on the distances required for emergency braking and communication */
+	constant int v_max := 16;
+
+	/* To close the barrier, the model needs (in order; non-overlapping):
+	*      1 time step to change the train state to WAIT_FOR_CLOSE
+	*      1 time step to change the communication state to CLOSE_REQUESTED
+	*      1 time step to initialize the barrier closing timer
+	*      5 time steps for the timer to reach zero
+	*      1 time step to change the barrier state to CLOSED
+	*      1 time step to change the communication state to CLOSE_ACK_RECEIVED
+	*      1 time step to change the train control state to CLEARED_TO_PASS
+	*     ==> time delay of eleven time steps to safely close the barrier
+	*/
+    constant int closing_time_delay := 11;
+
+	/* To brake from a velocity of X down to 0 costs X+1 time steps. During each of these time steps,
+	 * The velocity has each value [0; X] for exactly one time step. 
+	 * Due to Euler integration, the total distance traveled is the sum of all of these velocities, 
+	 * i.e. the sum of the first X natural numbers, i.e. X*(X+1)/2  
+	 * 
+	 * Additionally, we need:
+	 *     1 time step for the train to register that it has passed the mark and switches to emergency braking mode
+	 *     1 time step for the train in emergency braking mode to actually set the brakes
+	 *     1 time step buffer, because the train may not hit the braking mark exactly in a time step, 
+	 *       but may be well before it in one time step, and already passed it in the next 
+	 *    = 3 time steps, in the worst case at full train speed
+	 * */
+	//formula float a := v_max/2;
+	//formula float b := v_max+1;
+	//formula float c := 4*v_max;
+	//formula float max_braking_distance := (v_max/2)*(v_max+1) + (4*v_max);
+	formula int max_braking_distance := 200;
+	
+	/* The latest position at which to start the emergency braking procedure in order to always stop safely *before* reaching the crossing */
+	formula int pos_brake  :=   pos_crossing - max_braking_distance;
+	//formula float pos_brake := 700;
+	
+	/* The latest position that leaves enough time to let the barrier close *before* the train reaches the position at which it needs to start
+	 * the emergency braking procedure (in case closing the barrier fails). */
+	formula int pos_close  := pos_brake - (closing_time_delay * v_max);
+	//formula float pos_close := 500;
+	
+	// -----------------------------------------------------------------------------------------
+	// communication model
+	// -----------------------------------------------------------------------------------------
+	
+	component Communication
+        enum COMM_STATE := [IDLE, CLOSE_REQUESTED, CLOSE_ACK_RECEIVED];
+        formula fails := ffb.Communication.Control.ControlFail;
+        formula seemsClosed := ffb.Barrier.state = ffb.Barrier.BARRIER_STATE.CLOSED | ffb.Barrier.Physics.CloseSensorFail; 
+        state: COMM_STATE init COMM_STATE.IDLE;
+            
+	   	Control.ControlFail -> (state' = state);
+	    
+	    !Control.ControlFail & state = COMM_STATE.IDLE & ffb.Train.Control.state  = ffb.Train.TRAIN_STATE.WAIT_FOR_CLOSE  -> (state' = COMM_STATE.CLOSE_REQUESTED);
+        !Control.ControlFail & state = COMM_STATE.IDLE & ffb.Train.Control.state != ffb.Train.TRAIN_STATE.WAIT_FOR_CLOSE  -> (state' = state);
+
+        !Control.ControlFail & state = COMM_STATE.CLOSE_REQUESTED & !seemsClosed                                  -> (state' = state);
+        !Control.ControlFail & state = COMM_STATE.CLOSE_REQUESTED &  seemsClosed                                  -> (state' = COMM_STATE.CLOSE_ACK_RECEIVED);
+        
+        !Control.ControlFail & state = COMM_STATE.CLOSE_ACK_RECEIVED                                              -> (state' = state);
+        
+        component Control
+        	//Train demands communication
+        	formula shouldSendCloseRequest := ffb.Communication.state = ffb.Communication.COMM_STATE.IDLE & ffb.Train.Control.state  = ffb.Train.TRAIN_STATE.WAIT_FOR_CLOSE;
+        	formula shouldSendCloseAck     := ffb.Communication.state = ffb.Communication.COMM_STATE.CLOSE_REQUESTED & (ffb.Barrier.state  = ffb.Barrier.BARRIER_STATE.CLOSED| ffb.Barrier.Physics.CloseSensorFail );
+        	formula demand := shouldSendCloseRequest | shouldSendCloseAck;
+	        
+	        failure ControlFail
+			     occurs perdemand ffb.Communication.Control.demand probability ffb.p_comm_fails;
+			endfailure
+
+            component ControlFail_Obs
+                state: [0..1] init 0;
+                (!ffb.Communication.Control.ControlFail | state = 1) -> state = state;
+                ffb.Communication.Control.ControlFail -> state = 1;
+            endcomponent
+        endcomponent
+	endcomponent
+	
+	// -----------------------------------------------------------------------------------------
+	// barrier model
+	// -----------------------------------------------------------------------------------------
+	
+	component Barrier
+	    /* The barrier opens if:
+	     *     1. The train has passed the barrier (or rather the sensor behind the crossing)
+	     *     2. The barrier is closed longer than the maximum allowed closing time 
+	     *     3. The sensor determining whether a train has passed malfunctions  
+	     */
+		formula shouldOpen := (ffb.Train.Physics.Position.value > ffb.pos_sensor_passed | (state = BARRIER_STATE.CLOSED & timer = 0) | Physics.PassSensorFail);
+		enum BARRIER_STATE := [OPEN, CLOSING, CLOSED, STUCK];
+	
+		state : BARRIER_STATE init BARRIER_STATE.OPEN; // opened = 0, closing = 1, closed = 2, stuck = 3
+		timer : [0..26] init 0;          // time until the barrier is fully closed (for CLOSING) or before a timeout prompts it to be opened (for CLOSED) 
+       
+        state = BARRIER_STATE.OPEN & !ffb.Communication.state = ffb.Communication.COMM_STATE.CLOSE_REQUESTED  ->  (state' = BARRIER_STATE.OPEN) & (timer' = timer);
+        state = BARRIER_STATE.OPEN &  ffb.Communication.state = ffb.Communication.COMM_STATE.CLOSE_REQUESTED  ->  (state' = BARRIER_STATE.CLOSING) & (timer' = 5);
+
+        state = BARRIER_STATE.CLOSING & Physics.ActuatorFail                 -> (state' = BARRIER_STATE.STUCK)   & (timer' = 0);
+		state = BARRIER_STATE.CLOSING & !Physics.ActuatorFail & timer > 0    -> (state' = BARRIER_STATE.CLOSING) & (timer' = timer-1);
+        state = BARRIER_STATE.CLOSING & !Physics.ActuatorFail & timer = 0    -> (state' = BARRIER_STATE.CLOSED)  & (timer' = 26);
+
+        state = BARRIER_STATE.CLOSED & !shouldOpen                                ->  (state' = BARRIER_STATE.CLOSED) & (timer' = timer-1);
+        state = BARRIER_STATE.CLOSED &  shouldOpen & !Physics.ActuatorFail ->  (state' = BARRIER_STATE.OPEN)   & (timer' = 0);
+        state = BARRIER_STATE.CLOSED &  shouldOpen &  Physics.ActuatorFail ->  (state' = BARRIER_STATE.STUCK)  & (timer' = 0);   //'STUCK' is permanent --> need no timer anymore
+
+        state = BARRIER_STATE.STUCK ->  (state' = BARRIER_STATE.STUCK) & (timer' = timer);
+
+    
+		component Physics
+		
+			//failure of actuator, leading to the barrier to be stuck
+			failure ActuatorFail
+			     occurs perdemand true probability ffb.p_act_fails;
+			endfailure
+
+            component ActuatorFail_Obs
+                state: [0..1] init 0;
+                (!ffb.Barrier.Physics.ActuatorFail | state = 1) -> state = state;
+                ffb.Barrier.Physics.ActuatorFail -> state = 1;
+            endcomponent
+
+			/*
+			component Actuator
+		    	fail : [0..1] init 0;    
+		    	fail = 0 -> (1 - p_act_fails):(fail' = 0) + 
+		                         p_act_fails :(fail' = 1);
+		    	fail = 1 ->                   (fail' = 1);
+			endcomponent */
+			
+			//failure of the sensor to recognize the closed position of the barrier, leading to a false positive
+            /*failure CloseSensorFails
+                 occurs perdemand true probability p_close_sensor_fails; 
+                 recovers perdemand true probability 1- p_close_sensor_fails;
+            endfailure*/
+			
+			failure CloseSensorFail
+			     occurs perdemand true probability ffb.p_close_sensor_fails;
+			endfailure
+
+            component CloseSensorFail_Obs
+                state: [0..1] init 0;
+                (!ffb.Barrier.Physics.CloseSensorFail | state = 1) -> state = state;
+                ffb.Barrier.Physics.CloseSensorFail -> state = 1;
+            endcomponent
+			
+//			component CloseSensor
+//			    fails : [0..1] init 0;
+//			    true -> 
+//				  (1 - p_close_sensor_fails): (fails' = 0) + 
+//				       p_close_sensor_fails : (fails' = 1);
+//			endcomponent
+			
+			//failure of the sensor to recognize that the train passed the barrier, leading to a false positive
+			failure PassSensorFail
+			     occurs perdemand true probability ffb.p_pass_sensor_fails;
+			endfailure
+
+            component PassSensorFail_Obs
+                state: [0..1] init 0;
+                (!ffb.Barrier.Physics.PassSensorFail | state = 1) -> state = state;
+                ffb.Barrier.Physics.PassSensorFail -> state = 1;
+            endcomponent
+			
+//			component PassSensor
+//			    fails : [0..1] init 0;
+//			    true -> 
+//				   (1 - p_pass_sensor_fails): (fails' = 0) + 
+//				        p_pass_sensor_fails:  (fails' = 1);
+//			endcomponent
+		endcomponent
+	endcomponent
+	
+	// -----------------------------------------------------------------------------------------
+	// train model
+	// -----------------------------------------------------------------------------------------
+	
+	component Train
+	
+		enum TRAIN_STATE := [IDLE, WAIT_FOR_CLOSE, CLEARED_TO_PASS, BRAKING];
+		
+		formula int pos := ffb.Train.Physics.Position.value;
+		component Control
+		    formula closeAckReceived := ffb.Communication.state = ffb.Communication.COMM_STATE.CLOSE_ACK_RECEIVED;
+			state : TRAIN_STATE init ffb.Train.TRAIN_STATE.IDLE;
+
+	        state = ffb.Train.TRAIN_STATE.IDLE & !(ffb.Train.pos >= ffb.pos_close)  ->  (state' = ffb.Train.TRAIN_STATE.IDLE);
+	        state = ffb.Train.TRAIN_STATE.IDLE &  (ffb.Train.pos >= ffb.pos_close)  ->  (state' = ffb.Train.TRAIN_STATE.WAIT_FOR_CLOSE);
+	
+            state = ffb.Train.TRAIN_STATE.WAIT_FOR_CLOSE & !closeAckReceived & !(ffb.Train.pos >= ffb.pos_brake) ->  (state' = ffb.Train.TRAIN_STATE.WAIT_FOR_CLOSE);
+	        state = ffb.Train.TRAIN_STATE.WAIT_FOR_CLOSE &  closeAckReceived                       ->  (state' = ffb.Train.TRAIN_STATE.CLEARED_TO_PASS);
+	        state = ffb.Train.TRAIN_STATE.WAIT_FOR_CLOSE & !closeAckReceived &  (ffb.Train.pos >= ffb.pos_brake) ->  (state' = ffb.Train.TRAIN_STATE.BRAKING);
+	
+	        state = ffb.Train.TRAIN_STATE.CLEARED_TO_PASS  -> (state' = ffb.Train.TRAIN_STATE.CLEARED_TO_PASS);
+	        state = ffb.Train.TRAIN_STATE.BRAKING          -> (state' = ffb.Train.TRAIN_STATE.BRAKING);
+		endcomponent
+	
+		component Physics
+			//Position of the train in 10m steps
+			component Position
+		    	value : [0..1000] init 0;
+		
+		    	value + ffb.Train.Physics.Velocity.value < 1000  ->  ( value' = value + ffb.Train.Physics.Velocity.value); //Euler integration s' = s + v * dt
+		    	value + ffb.Train.Physics.Velocity.value >=1000  ->  ( value' = 1000);   // ... clamped at 1000 distance units (10km)
+			endcomponent
+			
+			//Velocity of the train in 10m/5s
+			component Velocity
+			    value : [0..16] init 16;
+			    (value + ffb.Train.Physics.Acceleration.value < 0)                                        ->   ( value' = 0 );
+                (value + ffb.Train.Physics.Acceleration.value >= 0 & value + ffb.Train.Physics.Acceleration.value <= ffb.v_max) ->   ( value' = value + ffb.Train.Physics.Acceleration.value );
+			                                      (value + ffb.Train.Physics.Acceleration.value >  ffb.v_max) ->   ( value' = ffb.v_max );
+			endcomponent
+			
+			//Acceleration of the train in 10m/(5s)²
+			component Acceleration
+			    value : [-1..1] init 0; 
+			    
+			    ffb.Train.Control.state != ffb.Train.TRAIN_STATE.BRAKING ->  // if in any state but 'braking', the train may keep its velocity or speed up
+			        //choice: ( value' = 0 ) +
+			        choice: ( value' = 0 ) + 
+			        choice: ( value' = 1 );
+			
+			    // the train slows down whenever it is braking and the brakes are not failing
+			    (ffb.Train.Control.state = ffb.Train.TRAIN_STATE.BRAKING) & !ffb.Train.Physics.BrakesFail ->  ( value' = -1 );
+			    (ffb.Train.Control.state = ffb.Train.TRAIN_STATE.BRAKING) &  ffb.Train.Physics.BrakesFail ->  ( value' =  0 );
+			endcomponent
+			
+			//brake system (possibility to fail at every time step)
+			
+			failure BrakesFail
+			     occurs perdemand true probability ffb.p_brakes_fail;
+			endfailure
+
+            component BrakesFail_Obs
+                state: [0..1] init 0;
+                (!ffb.Train.Physics.BrakesFail | state = 1) -> state = state;
+                ffb.Train.Physics.BrakesFail -> state = 1;
+            endcomponent
+
+		endcomponent	
+	endcomponent
+endcomponent
+
+formula int nextPos := ffb.Train.Physics.Position.value + ffb.Train.Physics.Velocity.value;
+formula Hazard := (!(ffb.Barrier.state = ffb.Barrier.BARRIER_STATE.CLOSED) & (ffb.Train.Physics.Position.value <= ffb.pos_crossing) & (nextPos > ffb.pos_crossing));
+
+//SPEC G (Hazard);
+
+// nominal
+// true step 57
+//SPEC AG ((ffb.Communication.Control.ControlFail_Obs.state = 0 & ffb.Barrier.Physics.ActuatorFail_Obs.state = 0 & ffb.Barrier.Physics.CloseSensorFail_Obs.state = 0 & ffb.Barrier.Physics.PassSensorFail_Obs.state = 0 & ffb.Train.Physics.BrakesFail_Obs.state = 0) => !Hazard);
+
+// SPEC 1
+// CS size 1: ffb.Barrier.Physics.PassSensorFail_Obs.state
+// false step 58
+//SPEC AG ((ffb.Communication.Control.ControlFail_Obs.state = 0 & ffb.Barrier.Physics.ActuatorFail_Obs.state = 0 & ffb.Barrier.Physics.CloseSensorFail_Obs.state = 0 & ffb.Train.Physics.BrakesFail_Obs.state = 0) => !Hazard);
+
+// SPEC 2
+// CS size 1: ffb.Communication.Control.ControlFail_Obs.state
+// true step 70
+//SPEC AG ((ffb.Barrier.Physics.ActuatorFail_Obs.state = 0 & ffb.Barrier.Physics.CloseSensorFail_Obs.state = 0 & ffb.Barrier.Physics.PassSensorFail_Obs.state = 0 & ffb.Train.Physics.BrakesFail_Obs.state = 0) => !Hazard);
+
+// SPEC 3
+// CS size 2: ffb.Barrier.Physics.ActuatorFail_Obs.state, ffb.Barrier.Physics.CloseSensorFail_Obs.state
+// false step 58
+//SPEC AG ((ffb.Communication.Control.ControlFail_Obs.state = 0 & ffb.Barrier.Physics.PassSensorFail_Obs.state = 0 & ffb.Train.Physics.BrakesFail_Obs.state = 0) => !Hazard);
+

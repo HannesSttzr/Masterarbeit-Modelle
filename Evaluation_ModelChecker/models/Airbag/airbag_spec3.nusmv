@@ -1,0 +1,473 @@
+MODULE ____INITCOMP__ (  )
+VAR
+state : (0) .. (1);
+ASSIGN
+init ( state ) := 1;
+next ( state ) := case
+TRUE : 0;
+esac;
+
+
+MODULE __main__COMP__airbag_observe ( __INITCOMP____state,main__COMP__crash__state,main__COMP__airbag__state )
+VAR
+airbag_observe_state : (0) .. (16);
+ASSIGN
+init ( airbag_observe_state ) := 0;
+next ( airbag_observe_state ) := case
+(__INITCOMP____state = 0) & ((main__COMP__crash__state = 0) & (airbag_observe_state = 0)) : 0;
+(__INITCOMP____state = 0) & ((main__COMP__crash__state = 1) & (airbag_observe_state = 0)) : 1;
+(__INITCOMP____state = 0) & (((main__COMP__airbag__state = 0) & (airbag_observe_state > 0)) & (airbag_observe_state < 15)) : airbag_observe_state + 1;
+(__INITCOMP____state = 0) & (((main__COMP__airbag__state = 1) & (airbag_observe_state > 0)) & (airbag_observe_state < 15)) : 16;
+(__INITCOMP____state = 0) & (airbag_observe_state = 15) : airbag_observe_state;
+(__INITCOMP____state = 0) & (airbag_observe_state = 16) : airbag_observe_state;
+__INITCOMP____state = 1 : airbag_observe_state;
+esac;
+
+
+MODULE __main__COMP__drive ( __INITCOMP____state,main__COMP__break__state,main__COMP__crash__state )
+VAR
+state : (0) .. (1);
+ASSIGN
+init ( state ) := 1;
+next ( state ) := case
+(__INITCOMP____state = 0) & ((main__COMP__break__state = 0) & (main__COMP__crash__state = 0)) : 1;
+(__INITCOMP____state = 0) & ((main__COMP__break__state = 1) | (main__COMP__crash__state = 1)) : 0;
+__INITCOMP____state = 1 : state;
+esac;
+
+
+MODULE __main__COMP__break ( __INITCOMP____state,main__COMP__drive__state )
+VAR
+state : (0) .. (1);
+ASSIGN
+init ( state ) := 0;
+next ( state ) := case
+(__INITCOMP____state = 0) & ((main__COMP__drive__state = 0) & (state = 0)) : 0;
+(__INITCOMP____state = 0) & ((main__COMP__drive__state = 1) & (state = 0)) : {1,0};
+(__INITCOMP____state = 0) & (state = 1) : {0,1};
+__INITCOMP____state = 1 : state;
+esac;
+
+
+MODULE __main__COMP__crash ( __INITCOMP____state,main__COMP__break__state )
+VAR
+state : (0) .. (1);
+ASSIGN
+init ( state ) := 0;
+next ( state ) := case
+(__INITCOMP____state = 0) & ((state = 0) & (main__COMP__break__state = 0)) : {1,0};
+(__INITCOMP____state = 0) & ((state = 0) & (main__COMP__break__state = 1)) : {1,0};
+(__INITCOMP____state = 0) & (state = 1) : 1;
+__INITCOMP____state = 1 : state;
+esac;
+
+
+MODULE __main__COMP__error_mechSensor_defect_Obs ( __INITCOMP____state,main__COMP__error_mechSensor_defect__COMP__error_mechSensor_defect__fails )
+VAR
+state : (0) .. (1);
+ASSIGN
+init ( state ) := 0;
+next ( state ) := case
+(__INITCOMP____state = 0) & ((!main__COMP__error_mechSensor_defect__COMP__error_mechSensor_defect__fails) | (state = 1)) : state;
+(__INITCOMP____state = 0) & (main__COMP__error_mechSensor_defect__COMP__error_mechSensor_defect__fails) : 1;
+__INITCOMP____state = 1 : state;
+esac;
+
+
+MODULE __main__COMP__error_mechSensor_wrong_Obs ( __INITCOMP____state,main__COMP__error_mechSensor_wrong__COMP__error_mechSensor_wrong__fails )
+VAR
+state : (0) .. (1);
+ASSIGN
+init ( state ) := 0;
+next ( state ) := case
+(__INITCOMP____state = 0) & ((!main__COMP__error_mechSensor_wrong__COMP__error_mechSensor_wrong__fails) | (state = 1)) : state;
+(__INITCOMP____state = 0) & (main__COMP__error_mechSensor_wrong__COMP__error_mechSensor_wrong__fails) : 1;
+__INITCOMP____state = 1 : state;
+esac;
+
+
+MODULE __main__COMP__mechSensor ( __INITCOMP____state,main__COMP__crash__state,main__COMP__error_mechSensor_wrong__COMP__error_mechSensor_wrong__fails,main__COMP__error_mechSensor_defect__COMP__error_mechSensor_defect__fails )
+VAR
+state : (0) .. (2);
+ASSIGN
+init ( state ) := 0;
+next ( state ) := case
+(__INITCOMP____state = 0) & (((main__COMP__crash__state = 0) & (!main__COMP__error_mechSensor_wrong__COMP__error_mechSensor_wrong__fails)) & (!main__COMP__error_mechSensor_defect__COMP__error_mechSensor_defect__fails)) : 0;
+(__INITCOMP____state = 0) & (((main__COMP__crash__state = 1) & (!main__COMP__error_mechSensor_wrong__COMP__error_mechSensor_wrong__fails)) & (!main__COMP__error_mechSensor_defect__COMP__error_mechSensor_defect__fails)) : 1;
+(__INITCOMP____state = 0) & (((main__COMP__crash__state = 0) & (main__COMP__error_mechSensor_wrong__COMP__error_mechSensor_wrong__fails)) & (!main__COMP__error_mechSensor_defect__COMP__error_mechSensor_defect__fails)) : 1;
+(__INITCOMP____state = 0) & (((main__COMP__crash__state = 1) & (main__COMP__error_mechSensor_wrong__COMP__error_mechSensor_wrong__fails)) & (!main__COMP__error_mechSensor_defect__COMP__error_mechSensor_defect__fails)) : 0;
+(__INITCOMP____state = 0) & (main__COMP__error_mechSensor_defect__COMP__error_mechSensor_defect__fails) : 2;
+__INITCOMP____state = 1 : state;
+esac;
+
+
+MODULE __main__COMP__error_magSensor_defect_Obs ( __INITCOMP____state,main__COMP__error_magSensor_defect__COMP__error_magSensor_defect__fails )
+VAR
+state : (0) .. (1);
+ASSIGN
+init ( state ) := 0;
+next ( state ) := case
+(__INITCOMP____state = 0) & ((!main__COMP__error_magSensor_defect__COMP__error_magSensor_defect__fails) | (state = 1)) : state;
+(__INITCOMP____state = 0) & (main__COMP__error_magSensor_defect__COMP__error_magSensor_defect__fails) : 1;
+__INITCOMP____state = 1 : state;
+esac;
+
+
+MODULE __main__COMP__error_magSensor_wrong_Obs ( __INITCOMP____state,main__COMP__error_magSensor_wrong__COMP__error_magSensor_wrong__fails )
+VAR
+state : (0) .. (1);
+ASSIGN
+init ( state ) := 0;
+next ( state ) := case
+(__INITCOMP____state = 0) & ((!main__COMP__error_magSensor_wrong__COMP__error_magSensor_wrong__fails) | (state = 1)) : state;
+(__INITCOMP____state = 0) & (main__COMP__error_magSensor_wrong__COMP__error_magSensor_wrong__fails) : 1;
+__INITCOMP____state = 1 : state;
+esac;
+
+
+MODULE __main__COMP__magSensor ( __INITCOMP____state,main__COMP__crash__state,main__COMP__error_magSensor_wrong__COMP__error_magSensor_wrong__fails,main__COMP__error_magSensor_defect__COMP__error_magSensor_defect__fails )
+VAR
+state : (0) .. (2);
+ASSIGN
+init ( state ) := 0;
+next ( state ) := case
+(__INITCOMP____state = 0) & (((main__COMP__crash__state = 0) & (!main__COMP__error_magSensor_wrong__COMP__error_magSensor_wrong__fails)) & (!main__COMP__error_magSensor_defect__COMP__error_magSensor_defect__fails)) : 0;
+(__INITCOMP____state = 0) & (((main__COMP__crash__state = 1) & (!main__COMP__error_magSensor_wrong__COMP__error_magSensor_wrong__fails)) & (!main__COMP__error_magSensor_defect__COMP__error_magSensor_defect__fails)) : 1;
+(__INITCOMP____state = 0) & (((main__COMP__crash__state = 0) & (main__COMP__error_magSensor_wrong__COMP__error_magSensor_wrong__fails)) & (!main__COMP__error_magSensor_defect__COMP__error_magSensor_defect__fails)) : 1;
+(__INITCOMP____state = 0) & (((main__COMP__crash__state = 1) & (main__COMP__error_magSensor_wrong__COMP__error_magSensor_wrong__fails)) & (!main__COMP__error_magSensor_defect__COMP__error_magSensor_defect__fails)) : 0;
+(__INITCOMP____state = 0) & (main__COMP__error_magSensor_defect__COMP__error_magSensor_defect__fails) : 2;
+__INITCOMP____state = 1 : state;
+esac;
+
+
+MODULE __main__COMP__SensorValidator ( __INITCOMP____state,main__COMP__mechSensor__state,main__COMP__magSensor__state )
+VAR
+state : (0) .. (1);
+ASSIGN
+init ( state ) := 0;
+next ( state ) := case
+(__INITCOMP____state = 0) & ((main__COMP__mechSensor__state = 1) & (main__COMP__magSensor__state = 1)) : 1;
+(__INITCOMP____state = 0) & (!((main__COMP__mechSensor__state = 1) & (main__COMP__magSensor__state = 1))) : 0;
+__INITCOMP____state = 1 : state;
+esac;
+
+
+MODULE __main__COMP__ValidatorSum__COMP__ValidatorSum__P_STATE__counter ( __INITCOMP____state,main__COMP__ValidatorSum__COMP__ValidatorSum__P_STATE__sum__sum )
+VAR
+counter : (0) .. (6);
+ASSIGN
+init ( counter ) := 0;
+next ( counter ) := case
+(__INITCOMP____state = 0) & ((counter < 5) & (main__COMP__ValidatorSum__COMP__ValidatorSum__P_STATE__sum__sum < 5)) : counter + 1;
+(__INITCOMP____state = 0) & ((counter < 5) & (main__COMP__ValidatorSum__COMP__ValidatorSum__P_STATE__sum__sum >= 5)) : counter + 1;
+(__INITCOMP____state = 0) & (counter >= 5) : 0;
+__INITCOMP____state = 1 : counter;
+esac;
+
+
+MODULE __main__COMP__ValidatorSum__COMP__ValidatorSum__P_STATE__sum ( __INITCOMP____state,main__COMP__ValidatorSum__COMP__ValidatorSum__P_STATE__counter__counter,main__COMP__SensorValidator__state )
+VAR
+sum : (0) .. (5);
+ASSIGN
+init ( sum ) := 0;
+next ( sum ) := case
+(__INITCOMP____state = 0) & ((main__COMP__ValidatorSum__COMP__ValidatorSum__P_STATE__counter__counter < 5) & (sum < 5)) : sum + main__COMP__SensorValidator__state;
+(__INITCOMP____state = 0) & ((main__COMP__ValidatorSum__COMP__ValidatorSum__P_STATE__counter__counter < 5) & (sum >= 5)) : sum;
+(__INITCOMP____state = 0) & (main__COMP__ValidatorSum__COMP__ValidatorSum__P_STATE__counter__counter >= 5) : main__COMP__SensorValidator__state;
+__INITCOMP____state = 1 : sum;
+esac;
+
+
+MODULE __main__COMP__error_crashDetectionA_wrong_Obs ( __INITCOMP____state,main__COMP__error_crashDetectionA_wrong__COMP__error_crashDetectionA_wrong__fails )
+VAR
+state : (0) .. (1);
+ASSIGN
+init ( state ) := 0;
+next ( state ) := case
+(__INITCOMP____state = 0) & ((!main__COMP__error_crashDetectionA_wrong__COMP__error_crashDetectionA_wrong__fails) | (state = 1)) : state;
+(__INITCOMP____state = 0) & (main__COMP__error_crashDetectionA_wrong__COMP__error_crashDetectionA_wrong__fails) : 1;
+__INITCOMP____state = 1 : state;
+esac;
+
+
+MODULE __main__COMP__crashDetectionA ( __INITCOMP____state,main__COMP__error_crashDetectionA_wrong__COMP__error_crashDetectionA_wrong__fails,main__COMP__SensorValidator__state,main__COMP__ValidatorSum__COMP__ValidatorSum__P_STATE__sum__sum,main__COMP__ValidatorSum__COMP__ValidatorSum__P_STATE__counter__counter )
+VAR
+state : (0) .. (1);
+ASSIGN
+init ( state ) := 0;
+next ( state ) := case
+(__INITCOMP____state = 0) & ((((!main__COMP__error_crashDetectionA_wrong__COMP__error_crashDetectionA_wrong__fails) & (main__COMP__SensorValidator__state = 1)) & (main__COMP__ValidatorSum__COMP__ValidatorSum__P_STATE__sum__sum > 4 - 1)) & (main__COMP__ValidatorSum__COMP__ValidatorSum__P_STATE__counter__counter = 5)) : 1;
+(__INITCOMP____state = 0) & ((!main__COMP__error_crashDetectionA_wrong__COMP__error_crashDetectionA_wrong__fails) & (((main__COMP__SensorValidator__state = 0) | (main__COMP__ValidatorSum__COMP__ValidatorSum__P_STATE__sum__sum <= 4 - 1)) | (!(main__COMP__ValidatorSum__COMP__ValidatorSum__P_STATE__counter__counter = 5)))) : 0;
+(__INITCOMP____state = 0) & ((((main__COMP__error_crashDetectionA_wrong__COMP__error_crashDetectionA_wrong__fails) & (main__COMP__SensorValidator__state = 1)) & (main__COMP__ValidatorSum__COMP__ValidatorSum__P_STATE__sum__sum > 4 - 1)) & (main__COMP__ValidatorSum__COMP__ValidatorSum__P_STATE__counter__counter = 5)) : 0;
+(__INITCOMP____state = 0) & ((main__COMP__error_crashDetectionA_wrong__COMP__error_crashDetectionA_wrong__fails) & (((main__COMP__SensorValidator__state = 0) | (main__COMP__ValidatorSum__COMP__ValidatorSum__P_STATE__sum__sum <= 4 - 1)) | (!(main__COMP__ValidatorSum__COMP__ValidatorSum__P_STATE__counter__counter = 5)))) : 1;
+__INITCOMP____state = 1 : state;
+esac;
+
+
+MODULE __main__COMP__error_crashDetectionB_wrong_Obs ( __INITCOMP____state,main__COMP__error_crashDetectionB_wrong__COMP__error_crashDetectionB_wrong__fails )
+VAR
+state : (0) .. (1);
+ASSIGN
+init ( state ) := 0;
+next ( state ) := case
+(__INITCOMP____state = 0) & ((!main__COMP__error_crashDetectionB_wrong__COMP__error_crashDetectionB_wrong__fails) | (state = 1)) : state;
+(__INITCOMP____state = 0) & (main__COMP__error_crashDetectionB_wrong__COMP__error_crashDetectionB_wrong__fails) : 1;
+__INITCOMP____state = 1 : state;
+esac;
+
+
+MODULE __main__COMP__crashDetectionB ( __INITCOMP____state,main__COMP__error_crashDetectionB_wrong__COMP__error_crashDetectionB_wrong__fails,main__COMP__SensorValidator__state,main__COMP__ValidatorSum__COMP__ValidatorSum__P_STATE__sum__sum,main__COMP__ValidatorSum__COMP__ValidatorSum__P_STATE__counter__counter )
+VAR
+state : (0) .. (1);
+ASSIGN
+init ( state ) := 0;
+next ( state ) := case
+(__INITCOMP____state = 0) & ((((!main__COMP__error_crashDetectionB_wrong__COMP__error_crashDetectionB_wrong__fails) & (main__COMP__SensorValidator__state = 1)) & (main__COMP__ValidatorSum__COMP__ValidatorSum__P_STATE__sum__sum > 4 - 1)) & (main__COMP__ValidatorSum__COMP__ValidatorSum__P_STATE__counter__counter = 5)) : 1;
+(__INITCOMP____state = 0) & ((!main__COMP__error_crashDetectionB_wrong__COMP__error_crashDetectionB_wrong__fails) & (((main__COMP__SensorValidator__state = 0) | (main__COMP__ValidatorSum__COMP__ValidatorSum__P_STATE__sum__sum <= 4 - 1)) | (!(main__COMP__ValidatorSum__COMP__ValidatorSum__P_STATE__counter__counter = 5)))) : 0;
+(__INITCOMP____state = 0) & ((((main__COMP__error_crashDetectionB_wrong__COMP__error_crashDetectionB_wrong__fails) & (main__COMP__SensorValidator__state = 1)) & (main__COMP__ValidatorSum__COMP__ValidatorSum__P_STATE__sum__sum > 4 - 1)) & (main__COMP__ValidatorSum__COMP__ValidatorSum__P_STATE__counter__counter = 5)) : 0;
+(__INITCOMP____state = 0) & ((main__COMP__error_crashDetectionB_wrong__COMP__error_crashDetectionB_wrong__fails) & (((main__COMP__SensorValidator__state = 0) | (main__COMP__ValidatorSum__COMP__ValidatorSum__P_STATE__sum__sum <= 4 - 1)) | (!(main__COMP__ValidatorSum__COMP__ValidatorSum__P_STATE__counter__counter = 5)))) : 1;
+__INITCOMP____state = 1 : state;
+esac;
+
+
+MODULE __main__COMP__error_crashDetectionMonitor_wrong_Obs ( __INITCOMP____state,main__COMP__error_crashDetectionMonitor_wrong__COMP__error_crashDetectionMonitor_wrong__fails )
+VAR
+state : (0) .. (1);
+ASSIGN
+init ( state ) := 0;
+next ( state ) := case
+(__INITCOMP____state = 0) & ((!main__COMP__error_crashDetectionMonitor_wrong__COMP__error_crashDetectionMonitor_wrong__fails) | (state = 1)) : state;
+(__INITCOMP____state = 0) & (main__COMP__error_crashDetectionMonitor_wrong__COMP__error_crashDetectionMonitor_wrong__fails) : 1;
+__INITCOMP____state = 1 : state;
+esac;
+
+
+MODULE __main__COMP__crashDetectionMonitor ( __INITCOMP____state,main__COMP__error_crashDetectionMonitor_wrong__COMP__error_crashDetectionMonitor_wrong__fails,main__COMP__crashDetectionA__state,main__COMP__crashDetectionB__state )
+VAR
+state : (0) .. (1);
+ASSIGN
+init ( state ) := 0;
+next ( state ) := case
+(__INITCOMP____state = 0) & (((!main__COMP__error_crashDetectionMonitor_wrong__COMP__error_crashDetectionMonitor_wrong__fails) & (main__COMP__crashDetectionA__state = 1)) & (main__COMP__crashDetectionB__state = 1)) : 1;
+(__INITCOMP____state = 0) & ((!main__COMP__error_crashDetectionMonitor_wrong__COMP__error_crashDetectionMonitor_wrong__fails) & (!((main__COMP__crashDetectionA__state = 1) & (main__COMP__crashDetectionB__state = 1)))) : 0;
+(__INITCOMP____state = 0) & (((main__COMP__error_crashDetectionMonitor_wrong__COMP__error_crashDetectionMonitor_wrong__fails) & (main__COMP__crashDetectionA__state = 1)) & (main__COMP__crashDetectionB__state = 1)) : 0;
+(__INITCOMP____state = 0) & ((main__COMP__error_crashDetectionMonitor_wrong__COMP__error_crashDetectionMonitor_wrong__fails) & (!((main__COMP__crashDetectionA__state = 1) & (main__COMP__crashDetectionB__state = 1)))) : 1;
+__INITCOMP____state = 1 : state;
+esac;
+
+
+MODULE __main__COMP__error_airbag_defect ( __INITCOMP____state,main__COMP__crashDetectionMonitor__state )
+VAR
+state : (-1) .. (1);
+ASSIGN
+init ( state ) := -1;
+next ( state ) := case
+(__INITCOMP____state = 0) & (state < 0) : {1,0};
+(__INITCOMP____state = 0) & ((state = 0) & (main__COMP__crashDetectionMonitor__state = 0)) : state;
+(__INITCOMP____state = 0) & ((state = 0) & (main__COMP__crashDetectionMonitor__state = 1)) : {1,0};
+(__INITCOMP____state = 0) & (state = 1) : 1;
+__INITCOMP____state = 1 : state;
+esac;
+
+
+MODULE __main__COMP__error_airbag_selfIgnition_Obs ( __INITCOMP____state,main__COMP__error_airbag_selfIgnition__COMP__error_airbag_selfIgnition__fails )
+VAR
+state : (0) .. (1);
+ASSIGN
+init ( state ) := 0;
+next ( state ) := case
+(__INITCOMP____state = 0) & ((!main__COMP__error_airbag_selfIgnition__COMP__error_airbag_selfIgnition__fails) | (state = 1)) : state;
+(__INITCOMP____state = 0) & (main__COMP__error_airbag_selfIgnition__COMP__error_airbag_selfIgnition__fails) : 1;
+__INITCOMP____state = 1 : state;
+esac;
+
+
+MODULE __main__COMP__airbag ( __INITCOMP____state,main__COMP__error_airbag_selfIgnition__COMP__error_airbag_selfIgnition__fails,main__COMP__crashDetectionMonitor__state,main__COMP__error_airbag_defect__state )
+VAR
+state : (0) .. (1);
+ASSIGN
+init ( state ) := 0;
+next ( state ) := case
+(__INITCOMP____state = 0) & (((!main__COMP__error_airbag_selfIgnition__COMP__error_airbag_selfIgnition__fails) & (main__COMP__crashDetectionMonitor__state = 1)) & (main__COMP__error_airbag_defect__state < 1)) : 1;
+(__INITCOMP____state = 0) & (((!main__COMP__error_airbag_selfIgnition__COMP__error_airbag_selfIgnition__fails) & (main__COMP__crashDetectionMonitor__state = 1)) & (main__COMP__error_airbag_defect__state = 1)) : 0;
+(__INITCOMP____state = 0) & ((!main__COMP__error_airbag_selfIgnition__COMP__error_airbag_selfIgnition__fails) & (main__COMP__crashDetectionMonitor__state = 0)) : 0;
+(__INITCOMP____state = 0) & (main__COMP__error_airbag_selfIgnition__COMP__error_airbag_selfIgnition__fails) : 1;
+__INITCOMP____state = 1 : state;
+esac;
+
+
+MODULE __main__COMP__error_mechSensor_defect (  )
+VAR
+fail__state : (-1) .. (1);
+ASSIGN
+init ( fail__state ) := -1;
+next ( fail__state ) := case
+((fail__state = 0) | (fail__state = -1)) & (TRUE) : {1,0};
+((fail__state = 0) | (fail__state = -1)) & (!TRUE) : fail__state;
+fail__state = 1 : fail__state;
+esac;
+
+
+MODULE __main__COMP__error_mechSensor_wrong (  )
+VAR
+fail__state : (-1) .. (1);
+ASSIGN
+init ( fail__state ) := -1;
+next ( fail__state ) := case
+((fail__state = 0) | (fail__state = -1)) & (TRUE) : {1,0};
+((fail__state = 0) | (fail__state = -1)) & (!TRUE) : fail__state;
+(fail__state = 1) & (TRUE) : {0,1};
+(fail__state = 1) & (!TRUE) : fail__state;
+esac;
+
+
+MODULE __main__COMP__error_magSensor_defect (  )
+VAR
+fail__state : (-1) .. (1);
+ASSIGN
+init ( fail__state ) := -1;
+next ( fail__state ) := case
+((fail__state = 0) | (fail__state = -1)) & (TRUE) : {1,0};
+((fail__state = 0) | (fail__state = -1)) & (!TRUE) : fail__state;
+fail__state = 1 : fail__state;
+esac;
+
+
+MODULE __main__COMP__error_magSensor_wrong (  )
+VAR
+fail__state : (-1) .. (1);
+ASSIGN
+init ( fail__state ) := -1;
+next ( fail__state ) := case
+((fail__state = 0) | (fail__state = -1)) & (TRUE) : {1,0};
+((fail__state = 0) | (fail__state = -1)) & (!TRUE) : fail__state;
+(fail__state = 1) & (TRUE) : {0,1};
+(fail__state = 1) & (!TRUE) : fail__state;
+esac;
+
+
+MODULE __main__COMP__error_crashDetectionA_wrong (  )
+VAR
+fail__state : (-1) .. (1);
+ASSIGN
+init ( fail__state ) := -1;
+next ( fail__state ) := case
+((fail__state = 0) | (fail__state = -1)) & (TRUE) : {1,0};
+((fail__state = 0) | (fail__state = -1)) & (!TRUE) : fail__state;
+(fail__state = 1) & (TRUE) : {0,1};
+(fail__state = 1) & (!TRUE) : fail__state;
+esac;
+
+
+MODULE __main__COMP__error_crashDetectionB_wrong (  )
+VAR
+fail__state : (-1) .. (1);
+ASSIGN
+init ( fail__state ) := -1;
+next ( fail__state ) := case
+((fail__state = 0) | (fail__state = -1)) & (TRUE) : {1,0};
+((fail__state = 0) | (fail__state = -1)) & (!TRUE) : fail__state;
+(fail__state = 1) & (TRUE) : {0,1};
+(fail__state = 1) & (!TRUE) : fail__state;
+esac;
+
+
+MODULE __main__COMP__error_crashDetectionMonitor_wrong (  )
+VAR
+fail__state : (-1) .. (1);
+ASSIGN
+init ( fail__state ) := -1;
+next ( fail__state ) := case
+((fail__state = 0) | (fail__state = -1)) & (TRUE) : {1,0};
+((fail__state = 0) | (fail__state = -1)) & (!TRUE) : fail__state;
+(fail__state = 1) & (TRUE) : {0,1};
+(fail__state = 1) & (!TRUE) : fail__state;
+esac;
+
+
+MODULE __main__COMP__error_airbag_selfIgnition (  )
+VAR
+fail__state : (-1) .. (1);
+ASSIGN
+init ( fail__state ) := -1;
+next ( fail__state ) := case
+((fail__state = 0) | (fail__state = -1)) & (TRUE) : {1,0};
+((fail__state = 0) | (fail__state = -1)) & (!TRUE) : fail__state;
+fail__state = 1 : fail__state;
+esac;
+
+MODULE main
+VAR
+__INITCOMP__ : ____INITCOMP__();
+main__COMP__airbag_observe : __main__COMP__airbag_observe(__INITCOMP__.state,main__COMP__crash.state,main__COMP__airbag.state);
+main__COMP__drive : __main__COMP__drive(__INITCOMP__.state,main__COMP__break.state,main__COMP__crash.state);
+main__COMP__break : __main__COMP__break(__INITCOMP__.state,main__COMP__drive.state);
+main__COMP__crash : __main__COMP__crash(__INITCOMP__.state,main__COMP__break.state);
+main__COMP__error_mechSensor_defect_Obs : __main__COMP__error_mechSensor_defect_Obs(__INITCOMP__.state,main__COMP__error_mechSensor_defect__COMP__error_mechSensor_defect__fails);
+main__COMP__error_mechSensor_wrong_Obs : __main__COMP__error_mechSensor_wrong_Obs(__INITCOMP__.state,main__COMP__error_mechSensor_wrong__COMP__error_mechSensor_wrong__fails);
+main__COMP__mechSensor : __main__COMP__mechSensor(__INITCOMP__.state,main__COMP__crash.state,main__COMP__error_mechSensor_wrong__COMP__error_mechSensor_wrong__fails,main__COMP__error_mechSensor_defect__COMP__error_mechSensor_defect__fails);
+main__COMP__error_magSensor_defect_Obs : __main__COMP__error_magSensor_defect_Obs(__INITCOMP__.state,main__COMP__error_magSensor_defect__COMP__error_magSensor_defect__fails);
+main__COMP__error_magSensor_wrong_Obs : __main__COMP__error_magSensor_wrong_Obs(__INITCOMP__.state,main__COMP__error_magSensor_wrong__COMP__error_magSensor_wrong__fails);
+main__COMP__magSensor : __main__COMP__magSensor(__INITCOMP__.state,main__COMP__crash.state,main__COMP__error_magSensor_wrong__COMP__error_magSensor_wrong__fails,main__COMP__error_magSensor_defect__COMP__error_magSensor_defect__fails);
+main__COMP__SensorValidator : __main__COMP__SensorValidator(__INITCOMP__.state,main__COMP__mechSensor.state,main__COMP__magSensor.state);
+main__COMP__ValidatorSum__COMP__ValidatorSum__P_STATE__counter : __main__COMP__ValidatorSum__COMP__ValidatorSum__P_STATE__counter(__INITCOMP__.state,main__COMP__ValidatorSum__COMP__ValidatorSum__P_STATE__sum.sum);
+main__COMP__ValidatorSum__COMP__ValidatorSum__P_STATE__sum : __main__COMP__ValidatorSum__COMP__ValidatorSum__P_STATE__sum(__INITCOMP__.state,main__COMP__ValidatorSum__COMP__ValidatorSum__P_STATE__counter.counter,main__COMP__SensorValidator.state);
+main__COMP__error_crashDetectionA_wrong_Obs : __main__COMP__error_crashDetectionA_wrong_Obs(__INITCOMP__.state,main__COMP__error_crashDetectionA_wrong__COMP__error_crashDetectionA_wrong__fails);
+main__COMP__crashDetectionA : __main__COMP__crashDetectionA(__INITCOMP__.state,main__COMP__error_crashDetectionA_wrong__COMP__error_crashDetectionA_wrong__fails,main__COMP__SensorValidator.state,main__COMP__ValidatorSum__COMP__ValidatorSum__P_STATE__sum.sum,main__COMP__ValidatorSum__COMP__ValidatorSum__P_STATE__counter.counter);
+main__COMP__error_crashDetectionB_wrong_Obs : __main__COMP__error_crashDetectionB_wrong_Obs(__INITCOMP__.state,main__COMP__error_crashDetectionB_wrong__COMP__error_crashDetectionB_wrong__fails);
+main__COMP__crashDetectionB : __main__COMP__crashDetectionB(__INITCOMP__.state,main__COMP__error_crashDetectionB_wrong__COMP__error_crashDetectionB_wrong__fails,main__COMP__SensorValidator.state,main__COMP__ValidatorSum__COMP__ValidatorSum__P_STATE__sum.sum,main__COMP__ValidatorSum__COMP__ValidatorSum__P_STATE__counter.counter);
+main__COMP__error_crashDetectionMonitor_wrong_Obs : __main__COMP__error_crashDetectionMonitor_wrong_Obs(__INITCOMP__.state,main__COMP__error_crashDetectionMonitor_wrong__COMP__error_crashDetectionMonitor_wrong__fails);
+main__COMP__crashDetectionMonitor : __main__COMP__crashDetectionMonitor(__INITCOMP__.state,main__COMP__error_crashDetectionMonitor_wrong__COMP__error_crashDetectionMonitor_wrong__fails,main__COMP__crashDetectionA.state,main__COMP__crashDetectionB.state);
+main__COMP__error_airbag_defect : __main__COMP__error_airbag_defect(__INITCOMP__.state,main__COMP__crashDetectionMonitor.state);
+main__COMP__error_airbag_selfIgnition_Obs : __main__COMP__error_airbag_selfIgnition_Obs(__INITCOMP__.state,main__COMP__error_airbag_selfIgnition__COMP__error_airbag_selfIgnition__fails);
+main__COMP__airbag : __main__COMP__airbag(__INITCOMP__.state,main__COMP__error_airbag_selfIgnition__COMP__error_airbag_selfIgnition__fails,main__COMP__crashDetectionMonitor.state,main__COMP__error_airbag_defect.state);
+main__COMP__error_mechSensor_defect : __main__COMP__error_mechSensor_defect();
+main__COMP__error_mechSensor_wrong : __main__COMP__error_mechSensor_wrong();
+main__COMP__error_magSensor_defect : __main__COMP__error_magSensor_defect();
+main__COMP__error_magSensor_wrong : __main__COMP__error_magSensor_wrong();
+main__COMP__error_crashDetectionA_wrong : __main__COMP__error_crashDetectionA_wrong();
+main__COMP__error_crashDetectionB_wrong : __main__COMP__error_crashDetectionB_wrong();
+main__COMP__error_crashDetectionMonitor_wrong : __main__COMP__error_crashDetectionMonitor_wrong();
+main__COMP__error_airbag_selfIgnition : __main__COMP__error_airbag_selfIgnition();
+
+DEFINE 
+  H_false_pos := (main__COMP__crash.state = 0) & (main__COMP__airbag.state = 1);
+
+DEFINE 
+  H_false_pos_2 := (main__COMP__crash.state = 1) & (main__COMP__airbag.state = 1);
+
+DEFINE 
+  H_false_pos_3 := (main__COMP__crash.state = 1) & (main__COMP__airbag.state = 0);
+
+DEFINE 
+  H_false_neg := main__COMP__airbag_observe.airbag_observe_state = 15;
+
+DEFINE 
+  H_false_neg_2 := main__COMP__airbag_observe.airbag_observe_state = 16;
+
+DEFINE 
+  main__COMP__error_mechSensor_defect__COMP__error_mechSensor_defect__fails := main__COMP__error_mechSensor_defect.fail__state = 1;
+
+DEFINE 
+  main__COMP__error_mechSensor_wrong__COMP__error_mechSensor_wrong__fails := main__COMP__error_mechSensor_wrong.fail__state = 1;
+
+DEFINE 
+  main__COMP__error_magSensor_defect__COMP__error_magSensor_defect__fails := main__COMP__error_magSensor_defect.fail__state = 1;
+
+DEFINE 
+  main__COMP__error_magSensor_wrong__COMP__error_magSensor_wrong__fails := main__COMP__error_magSensor_wrong.fail__state = 1;
+
+DEFINE 
+  main__COMP__error_crashDetectionA_wrong__COMP__error_crashDetectionA_wrong__fails := main__COMP__error_crashDetectionA_wrong.fail__state = 1;
+
+DEFINE 
+  main__COMP__error_crashDetectionB_wrong__COMP__error_crashDetectionB_wrong__fails := main__COMP__error_crashDetectionB_wrong.fail__state = 1;
+
+DEFINE 
+  main__COMP__error_crashDetectionMonitor_wrong__COMP__error_crashDetectionMonitor_wrong__fails := main__COMP__error_crashDetectionMonitor_wrong.fail__state = 1;
+
+DEFINE 
+  main__COMP__error_airbag_selfIgnition__COMP__error_airbag_selfIgnition__fails := main__COMP__error_airbag_selfIgnition.fail__state = 1;
+
+INVARSPEC (((((((main__COMP__error_airbag_selfIgnition_Obs.state = 0) & (main__COMP__error_crashDetectionMonitor_wrong_Obs.state = 0)) & (main__COMP__error_magSensor_wrong_Obs.state = 0)) & (main__COMP__error_magSensor_defect_Obs.state = 0)) & (main__COMP__error_mechSensor_wrong_Obs.state = 0)) & (main__COMP__error_mechSensor_defect_Obs.state = 0)) -> !H_false_pos)
+

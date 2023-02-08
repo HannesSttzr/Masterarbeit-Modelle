@@ -1,0 +1,6 @@
+read_model -i airbag_spec2.nusmv
+flatten_hierarchy
+encode_variables
+build_boolean_model
+check_invar_ic3 -m4 -O2  
+quit

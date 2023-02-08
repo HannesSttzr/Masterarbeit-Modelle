@@ -1,0 +1,21 @@
+MODULE __Comp (  )
+VAR
+state : real;
+FAIRNESS state>= 0.0;
+FAIRNESS state <= 2.1234567891233456;
+INVAR state>= 0.0;
+INVAR state <= 2.1234567891233456;
+VAR
+ASSIGN
+init ( state ) := 1.0;
+next ( state ) := case
+state <= 1.0 : state * 2.0;
+state > 1.0 : state / 3.0;
+esac;
+
+MODULE main
+VAR
+Comp : __Comp();
+
+
+INVARSPEC (Comp.state != 16.0 / 27.0)

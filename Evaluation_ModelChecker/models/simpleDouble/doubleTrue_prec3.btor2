@@ -1,0 +1,82 @@
+1 sort bitvec 21
+2 constd 1 1000000
+3 sort bitvec 24
+4 constd 3 1000000
+5 state 3 Comp__state
+6 init 3 5 4
+7 sort bitvec 1
+8 sort bitvec 10
+9 constd 8 -499
+10 sort bitvec 23
+11 constd 10 2123499
+12 sort bitvec 24
+13 constd 12 2123499
+14 constd 12 -499
+15 sgte 7 5 14
+16 slte 7 5 13
+17 and 7 15 16
+18 constraint 17
+19 sort bitvec 22
+20 constd 19 2000000
+21 sort bitvec 43
+22 sext 21 5 19
+23 constd 21 2000000
+24 mul 21 22 23
+25 constd 21 500000
+26 constd 21 -500000
+27 constd 21 0
+28 slt 7 24 27
+29 ite 21 28 26 25
+30 add 21 24 29
+31 constd 21 1000000
+32 sdiv 21 30 31
+33 slice 12 32 23 0
+34 constd 10 3000000
+35 sort bitvec 46
+36 sext 35 5 22
+37 constd 35 10000000
+38 mul 35 36 37
+39 constd 35 3000000
+40 sdiv 35 38 39
+41 constd 35 5
+42 constd 35 -5
+43 constd 35 0
+44 slt 7 38 43
+45 ite 35 44 42 41
+46 add 35 40 45
+47 constd 35 10
+48 sdiv 35 46 47
+49 slice 1 48 20 0
+50 sext 12 49 3
+51 constd 1 500
+52 constd 1 -500
+53 constd 1 0
+54 slt 7 2 53
+55 ite 1 54 52 51
+56 add 1 2 55
+57 constd 1 1000
+58 sdiv 1 56 57
+59 constd 12 500
+60 constd 12 -500
+61 constd 12 0
+62 slt 7 5 61
+63 ite 12 62 60 59
+64 add 12 5 63
+65 constd 12 1000
+66 sdiv 12 64 65
+67 sext 12 58 3
+68 sgt 7 66 67
+69 ite 12 68 50 33
+70 next 12 5 69
+71 constd 19 500
+72 constd 19 -500
+73 constd 19 0
+74 slt 7 20 73
+75 ite 19 74 72 71
+76 add 19 20 75
+77 constd 19 1000
+78 sdiv 19 76 77
+79 sext 12 78 2
+80 slte 7 66 79
+81 not 7 80
+82 bad 81

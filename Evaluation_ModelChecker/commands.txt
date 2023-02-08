@@ -1,0 +1,139 @@
+
+nuXmv
+	time nuXmv -source airbag_spec3_aig.nuxmv
+	time nuXmv -source airbag_spec3_btor2.nuxmv
+	time nuXmv -source airbag_nominal_aig_2.nuxmv
+	time nuXmv -source airbag_nominal_btor2.nuxmv
+	nuXmv -source airbag_spec1_toaig.nuxmv
+
+	time nuXmv -source ffb_nominal.nuxmv
+	nuXmv -source ffb_spec3_toaig.nuxmv
+	time nuXmv -source ffb_spec1_aig_2.nuxmv
+	time nuXmv -source ffb_spec1_btor2_2.nuxmv
+
+	time nuXmv -source lgs_fc3_spec1_short_2.nuxmv
+	time nuXmv -source lgs_fc3_nominal_short_btor2_2.nuxmv
+	nuXmv -source lgs_fc3_nominal_short_toaig.nuxmv
+	time nuXmv -source lgs_fc3_nominal_short_btor2_2.nuxmv
+	
+	time nuXmv -source doubleFalse_2.nuxmv
+	time nuXmv -source doubleTrue_btor2.nuxmv
+
+NuSMV
+	time NuSMV -source airbag_spec1_source.nusmv
+	time NuSMV -source ffb_nominal_source.nusmv
+	time NuSMV -source lgs_fc3_spec1_source.nusmv
+
+AVR
+	time python avr.py -o /home/avr_out -n airbag_nominal --timeout 3600 -a sa --witness --kind --level 5 /home/models/Airbag/airbag_spec3.btor2
+	time python avr.py -o /home/avr_out -n airbag_nominal --timeout 3600 -a sa --witness --level 5 /home/models/Airbag/airbag_spec3.btor2
+	time python avr.py -o /home/avr_out -n airbag_nominal --timeout 3600 -a sa --witness --kind --level 5 /home/models/Airbag/airbag_spec3_aig.btor2
+	time python avr.py -o /home/avr_out -n airbag_nominal --timeout 3600 -a sa --witness --level 5 /home/models/Airbag/airbag_spec3_aig.btor2
+
+	time python avr.py -o /home/avr_out -n ffb_spec2 --timeout 72000 -a sa --witness --kind --level 5 /home/models/ffb/ffb_spec1.btor2
+	time python avr.py -o /home/avr_out -n ffb_spec2 --timeout 72000 -a sa --witness --level 5 /home/models/ffb/ffb_nominal.btor2
+	time python avr.py -o /home/avr_out -n ffb_spec2 --timeout 72000 --interpol 1 --witness /home/models/ffb/ffb_spec2.btor2
+	time python avr.py -o /home/avr_out -n ffb_spec2 --timeout 72000 -a sa --witness --kind --level 5 /home/models/ffb/ffb_nominal_aig.btor2
+	time python avr.py -o /home/avr_out -n ffb_spec2 --timeout 72000 -a sa --witness --level 5 /home/models/ffb/ffb_nominal_aig.btor2
+
+	time python avr.py -o /home/avr_out -n lgs_fc3_nominal --timeout 72000 -a sa --witness --kind --level 5 /home/models/LGS_FC3/lgs_fc3_spec1_short.btor2
+	time python avr.py -o /home/avr_out -n lgs_fc3_nominal --timeout 72000 -a sa --witness --level 5 /home/models/LGS_FC3/lgs_fc3_spec1_short.btor2
+	time python avr.py -o /home/avr_out -n lgs_fc3_nominal --timeout 72000 -a sa --witness --kind --level 5 /home/models/LGS_FC3/lgs_fc3_spec1_short_aig.btor2
+	time python avr.py -o /home/avr_out -n lgs_fc3_nominal --timeout 72000 -a sa --witness --level 5 /home/models/LGS_FC3/lgs_fc3_spec1_short_aig.btor2
+
+	time python avr.py -o /home/avr_out -n lgs_fc3_nominal --timeout 72000 -a sa --witness --kind --level 5 /home/models/simpleDouble/doubleTrue.btor2
+	time python avr.py -o /home/avr_out -n lgs_fc3_nominal --timeout 720000 -a sa --witness --level 5 /home/models/simpleDouble/doubleTrue_prec3.btor2
+
+ABC
+	time abc -F airbag_spec3_aig.txt
+	time abc -F airbag_spec3_btor2.txt
+
+	time abc -F ffb_spec2_aig.txt
+	time abc -F ffb_spec3_btor2.txt
+
+	time abc -F lgs_fc3_spec1_short_aig.txt
+	time abc -F lgs_fc3_spec1_short_btor2.txt
+
+	time abc -F doubleFalse_btor2.txt
+
+	read_aiger airbag_spec1_invar_0.aig
+	pdr -d -t -x -L log.txt -I invar.txt
+	quit
+
+pdtrav
+	in windows mit nuxmv aag datei erstellen
+	im Header die letzte Zahl (1) löschen und die 0 durch 1 ersetzen
+	von Hand eine neue Datei erstellen und den Inhalt reinkopieren (beschwert sich sonst, dass er eine neue Zeile oder Leerzeichen erwartet)
+	die aag datei in Docker mit aigtoaig in eine aig Datei umwandeln
+
+	aigtoaig ffb_nominal_pd.aag ffb_nominal_pd.aig
+	aigtoaig lgs_fc3_spec1_pd.aag lgs_fc3_spec1_pd.aig
+	
+	time pdtrav -strategy ind airbag_spec3_pd.aig
+	time pdtrav -strategy itp5 ffb_nominal_pd.aig
+	time pdtrav -strategy ind lgs_fc3_spec1_pd.aig
+
+	time pdtrav -strategy itp5 lgs_fc3_spec1_short_pd.aig
+
+	time pdtrav -strategy itp5 airbag_spec2_pd.aig
+	time pdtrav -strategy bdd ffb_spec3_pd.aig
+
+Pono
+	time pono --witness --engine ind -v 1 -k 1000 --smt-solver btor airbag_spec3.btor2
+	time pono --engine ic3bits -v 1 -k 1000 --smt-solver btor airbag_nominal.btor2
+	time pono --witness --engine ind -v 1 -k 1000 --smt-solver btor airbag_spec3_aig.btor2
+	time pono --engine ic3bits -v 1 -k 1000 --smt-solver btor airbag_spec1_aig.btor2
+
+	time pono --witness --engine ind -v 1 -k 1000 --smt-solver btor ffb_spec3.btor2
+	time pono --engine ic3bits -v 1 -k 1000 --smt-solver btor ffb_spec2.btor2
+	time pono --engine interp -v 1 -k 1000 --smt-solver msat ffb_nominal.btor2
+	time pono --witness --engine ind -v 1 -k 1000 --smt-solver btor ffb_spec3_aig.btor2
+	time pono --engine ic3bits -v 1 -k 1000 --smt-solver btor ffb_spec2_aig.btor2
+
+	time pono --witness --engine ind -v 1 -k 1000 --smt-solver btor lgs_fc3_spec1_short.btor2
+	time pono --engine ic3bits -v 1 -k 1000 --smt-solver btor lgs_fc3_spec1_short.btor2
+	time pono --witness --engine ind -v 1 -k 1000 --smt-solver btor lgs_fc3_spec1_short_aig.btor2
+	time pono --engine ic3bits -v 1 -k 1000 --smt-solver btor lgs_fc3_nominal_short_aig.btor2
+
+	time pono --witness --engine ind -v 1 -k 1000 --smt-solver btor doubleTrue.btor2
+	time pono --engine ic3bits -v 1 -k 1000 --smt-solver btor doubleTrue.btor2
+
+btormc
+	time btormc -v 1 --kind -kmax 1000 --btor-stats --trace-gen --trace-gen-full airbag_spec1.btor2
+	time btormc -v 1 --kind -kmax 1000 --btor-stats --trace-gen --trace-gen-full airbag_spec1_aig.btor2
+
+	time btormc -v 1 --kind -kmax 5000 --btor-stats --trace-gen --trace-gen-full ffb_spec2.btor2
+	time btormc -v 1 --kind -kmax 5000 --btor-stats --trace-gen --trace-gen-full ffb_spec2_aig.btor2
+
+	time btormc -v 1 --kind -kmax 1000 --btor-stats --trace-gen --trace-gen-full lgs_fc3_nominal_short.btor2
+	time btormc -v 1 --kind -kmax 1000 --btor-stats --trace-gen --trace-gen-full lgs_fc3_nominal_short_aig.btor2
+
+	time btormc -v 1 --kind -kmax 1000 --btor-stats --trace-gen --trace-gen-full doubleTrue_prec3.btor2
+Yosys
+	read_aiger ffb_spec3_invar_0.aig
+	write_btor ffb_spec3_aig.btor2
+	- TODO: output entfernen und bad hinzufügen
+
+	read_aiger lgs_fc3_nominal_short_invar_0.aig
+	write_btor lgs_fc3_nominal_short_aig.btor2
+
+	read_aiger ffb_nominal_invar_0.aig
+	write_btor ffb_nominal_aig2.btor2
+
+AigToAig
+	aigtoaig airbag_spec3_btor2.aag airbag_spec3_btor2.aig
+	aigtoaig airbag_spec3_pd.aag airbag_spec3_pd.aig
+
+	aigtoaig ffb_spec3_btor2.aag ffb_spec3_btor2.aig
+	
+	aigtoaig lgs_fc3_nominal_short_btor2.aag lgs_fc3_nominal_short_btor2.aig
+	aigtoaig lgs_fc3_nominal_short_pd.aag lgs_fc3_nominal_short_pd.aig
+
+	aigtoaig doubleFalse_btor2.aag doubleFalse_btor2.aig
+
+btor2aiger
+	btor2aiger -a airbag_spec3.btor2
+	btor2aiger -a ffb_spec3.btor2
+	btor2aiger -a lgs_fc3_spec1_short.btor2 > lgs_fc3_spec1_short_btor2.aag
+	btor2aiger -a doubleFalse.btor2 > doubleFalse_btor2.aag
+

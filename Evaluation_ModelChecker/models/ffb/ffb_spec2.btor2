@@ -1,0 +1,414 @@
+1 sort bitvec 2
+2 constd 1 1
+3 sort bitvec 2
+5 state 3 __INITCOMP____state
+6 init 3 5 2
+7 sort bitvec 1
+8 constd 1 0
+9 sgte 7 5 8
+10 slte 7 5 2
+11 and 7 9 10
+12 constraint 11
+13 sort bitvec 3
+14 sext 13 8 1
+15 state 13 ffb__Communication__state
+16 init 13 15 14
+17 sort bitvec 3
+18 constd 17 2
+19 constd 17 0
+20 sgte 7 15 19
+21 slte 7 15 18
+22 and 7 20 21
+23 constraint 22
+24 sort bitvec 2
+26 state 24 ffb__Communication__Control__ControlFail_Obs__state
+27 init 24 26 8
+28 sgte 7 26 8
+29 slte 7 26 2
+30 and 7 28 29
+31 constraint 30
+32 constd 1 -1
+33 sort bitvec 2
+35 state 33 ffb__Communication__Control__ControlFail__fail__state
+36 init 33 35 32
+37 sgte 7 35 32
+38 slte 7 35 2
+39 and 7 37 38
+40 constraint 39
+41 sort bitvec 2
+43 state 41 ffb__Barrier__Physics__ActuatorFail_Obs__state
+44 init 41 43 8
+45 sgte 7 43 8
+46 slte 7 43 2
+47 and 7 45 46
+48 constraint 47
+49 sort bitvec 2
+51 state 49 ffb__Barrier__Physics__CloseSensorFail_Obs__state
+52 init 49 51 8
+53 sgte 7 51 8
+54 slte 7 51 2
+55 and 7 53 54
+56 constraint 55
+57 sort bitvec 2
+59 state 57 ffb__Barrier__Physics__PassSensorFail_Obs__state
+60 init 57 59 8
+61 sgte 7 59 8
+62 slte 7 59 2
+63 and 7 61 62
+64 constraint 63
+65 sort bitvec 2
+67 state 65 ffb__Barrier__Physics__ActuatorFail__fail__state
+68 init 65 67 32
+69 sgte 7 67 32
+70 slte 7 67 2
+71 and 7 69 70
+72 constraint 71
+73 sort bitvec 2
+75 state 73 ffb__Barrier__Physics__CloseSensorFail__fail__state
+76 init 73 75 32
+77 sgte 7 75 32
+78 slte 7 75 2
+79 and 7 77 78
+80 constraint 79
+81 sort bitvec 2
+83 state 81 ffb__Barrier__Physics__PassSensorFail__fail__state
+84 init 81 83 32
+85 sgte 7 83 32
+86 slte 7 83 2
+87 and 7 85 86
+88 constraint 87
+89 sort bitvec 3
+90 sext 89 8 1
+91 state 89 ffb__Barrier__Barrier__P_STATE__state__state
+92 init 89 91 90
+93 constd 17 3
+94 sgte 7 91 19
+95 slte 7 91 93
+96 and 7 94 95
+97 constraint 96
+98 sort bitvec 6
+99 sext 98 8 4
+100 state 98 ffb__Barrier__Barrier__P_STATE__timer__timer
+101 init 98 100 99
+102 sort bitvec 6
+103 constd 102 26
+104 constd 102 0
+105 sgte 7 100 104
+106 slte 7 100 103
+107 and 7 105 106
+108 constraint 107
+109 sort bitvec 3
+110 sext 109 8 1
+111 state 109 ffb__Train__Control__state
+112 init 109 111 110
+113 sgte 7 111 19
+114 slte 7 111 93
+115 and 7 113 114
+116 constraint 115
+117 sort bitvec 11
+118 sext 117 8 9
+119 state 117 ffb__Train__Physics__Position__value
+120 init 117 119 118
+121 sort bitvec 11
+122 constd 121 1000
+123 constd 121 0
+124 sgte 7 119 123
+125 slte 7 119 122
+126 and 7 124 125
+127 constraint 126
+128 constd 102 16
+129 sort bitvec 6
+131 state 129 ffb__Train__Physics__Velocity__value
+132 init 129 131 128
+133 sgte 7 131 104
+134 slte 7 131 128
+135 and 7 133 134
+136 constraint 135
+137 sort bitvec 2
+139 state 137 ffb__Train__Physics__Acceleration__value
+140 init 137 139 8
+141 neg 1 2
+142 sgte 7 139 141
+143 slte 7 139 2
+144 and 7 142 143
+145 constraint 144
+146 sort bitvec 2
+148 state 146 ffb__Train__Physics__BrakesFail_Obs__state
+149 init 146 148 8
+150 sgte 7 148 8
+151 slte 7 148 2
+152 and 7 150 151
+153 constraint 152
+154 sort bitvec 2
+156 state 154 ffb__Train__Physics__BrakesFail__fail__state
+157 init 154 156 32
+158 sgte 7 156 32
+159 slte 7 156 2
+160 and 7 158 159
+161 constraint 160
+162 sext 121 131 5
+163 add 121 119 162
+164 constd 121 900
+165 sgt 7 163 164
+166 slte 7 119 164
+167 eq 7 91 18
+168 not 7 167
+169 and 7 168 166
+170 and 7 169 165
+171 sort bitvec 9
+172 constd 171 200
+173 sext 121 172 2
+174 sub 121 164 173
+175 sort bitvec 5
+176 constd 175 11
+177 constd 171 11
+178 constd 171 16
+179 mul 171 177 178
+180 sext 121 179 2
+181 sub 121 174 180
+182 sext 17 2 1
+183 eq 7 111 182
+184 sext 17 8 1
+185 eq 7 15 184
+186 and 7 185 183
+187 eq 7 35 2
+188 eq 7 67 2
+189 eq 7 75 2
+190 eq 7 83 2
+191 eq 7 15 18
+192 eq 7 156 2
+193 or 7 167 189
+194 eq 7 15 182
+195 and 7 194 193
+196 or 7 186 195
+197 sext 102 8 4
+198 eq 7 100 197
+199 and 7 167 198
+200 constd 121 950
+201 sgt 7 119 200
+202 or 7 201 199
+203 or 7 202 190
+204 next 1 5 8
+205 not 7 187
+206 and 7 205 185
+207 and 7 206 183
+208 eq 7 5 8
+209 and 7 208 207
+210 ite 17 209 182 15
+211 neq 7 111 182
+212 and 7 206 211
+213 and 7 208 212
+214 ite 17 213 15 210
+215 not 7 193
+216 and 7 205 194
+217 and 7 216 215
+218 and 7 208 217
+219 ite 17 218 15 214
+220 and 7 216 193
+221 and 7 208 220
+222 ite 17 221 18 219
+223 and 7 205 191
+224 and 7 208 223
+225 ite 17 224 15 222
+226 eq 7 5 2
+227 ite 17 226 15 225
+228 next 17 15 227
+229 and 7 208 187
+230 ite 1 229 2 26
+231 ite 1 226 26 230
+232 next 1 26 231
+233 input 1 ffb__Communication__Control__ControlFail__fail__state_probabilisticAssignment_233
+234 eq 7 233 2
+235 eq 7 233 8
+236 or 7 235 234
+237 constraint 236
+238 not 7 196
+239 eq 7 35 32
+240 eq 7 35 8
+241 or 7 240 239
+242 and 7 241 238
+243 ite 1 242 35 233
+244 ite 1 187 35 243
+245 next 1 35 244
+246 and 7 208 188
+247 ite 1 246 2 43
+248 ite 1 226 43 247
+249 next 1 43 248
+250 and 7 208 189
+251 ite 1 250 2 51
+252 ite 1 226 51 251
+253 next 1 51 252
+254 and 7 208 190
+255 ite 1 254 2 59
+256 ite 1 226 59 255
+257 next 1 59 256
+258 input 1 ffb__Barrier__Physics__ActuatorFail__fail__state_probabilisticAssignment_258
+259 eq 7 258 2
+260 eq 7 258 8
+261 or 7 260 259
+262 constraint 261
+263 constd 7 1
+264 not 7 263
+265 eq 7 67 32
+266 eq 7 67 8
+267 or 7 266 265
+268 and 7 267 264
+269 ite 1 268 67 258
+270 ite 1 188 67 269
+271 next 1 67 270
+272 input 1 ffb__Barrier__Physics__CloseSensorFail__fail__state_probabilisticAssignment_272
+273 eq 7 272 2
+274 eq 7 272 8
+275 or 7 274 273
+276 constraint 275
+277 eq 7 75 32
+278 eq 7 75 8
+279 or 7 278 277
+280 and 7 279 264
+281 ite 1 280 75 272
+282 ite 1 189 75 281
+283 next 1 75 282
+284 input 1 ffb__Barrier__Physics__PassSensorFail__fail__state_probabilisticAssignment_284
+285 eq 7 284 2
+286 eq 7 284 8
+287 or 7 286 285
+288 constraint 287
+289 eq 7 83 32
+290 eq 7 83 8
+291 or 7 290 289
+292 and 7 291 264
+293 ite 1 292 83 284
+294 ite 1 190 83 293
+295 next 1 83 294
+296 eq 7 91 184
+297 and 7 296 194
+298 and 7 208 297
+299 ite 17 298 182 184
+300 eq 7 91 182
+301 and 7 300 188
+302 and 7 208 301
+303 ite 17 302 93 299
+304 sgt 7 100 197
+305 not 7 188
+306 and 7 300 305
+307 and 7 306 304
+308 and 7 208 307
+309 ite 17 308 182 303
+310 and 7 306 198
+311 and 7 208 310
+312 ite 17 311 18 309
+313 not 7 203
+314 and 7 167 313
+315 and 7 208 314
+316 ite 17 315 18 312
+317 and 7 167 203
+318 and 7 317 305
+319 and 7 208 318
+320 ite 17 319 184 316
+321 and 7 317 188
+322 and 7 208 321
+323 ite 17 322 93 320
+324 eq 7 91 93
+325 and 7 208 324
+326 ite 17 325 93 323
+327 ite 17 226 91 326
+328 next 17 91 327
+329 sort bitvec 4
+330 constd 329 5
+331 sext 102 330 2
+332 ite 102 298 331 100
+333 ite 102 302 197 332
+334 constd 102 1
+335 sub 102 100 334
+336 ite 102 308 335 333
+337 ite 102 311 103 336
+338 ite 102 315 335 337
+339 ite 102 319 197 338
+340 ite 102 322 197 339
+341 ite 102 325 100 340
+342 ite 102 226 100 341
+343 next 102 100 342
+344 sgte 7 119 181
+345 eq 7 111 184
+346 and 7 345 344
+347 and 7 208 346
+348 ite 17 347 182 184
+349 sgte 7 119 174
+350 not 7 349
+351 not 7 191
+352 and 7 183 351
+353 and 7 352 350
+354 and 7 208 353
+355 ite 17 354 182 348
+356 and 7 183 191
+357 and 7 208 356
+358 ite 17 357 18 355
+359 and 7 352 349
+360 and 7 208 359
+361 ite 17 360 93 358
+362 eq 7 111 18
+363 and 7 208 362
+364 ite 17 363 18 361
+365 eq 7 111 93
+366 and 7 208 365
+367 ite 17 366 93 364
+368 ite 17 226 111 367
+369 next 17 111 368
+370 sgte 7 163 122
+371 and 7 208 370
+372 ite 121 371 122 163
+373 ite 121 226 119 372
+374 next 121 119 373
+375 sext 102 139 4
+376 add 102 131 375
+377 slte 7 376 128
+378 sgte 7 376 197
+379 and 7 378 377
+380 and 7 208 379
+381 ite 102 380 376 197
+382 sgt 7 376 128
+383 and 7 208 382
+384 ite 102 383 128 381
+385 ite 102 226 131 384
+386 next 102 131 385
+387 input 1 ffb__Train__Physics__Acceleration__value_nondetAssignment_387
+388 eq 7 387 8
+389 eq 7 387 2
+390 or 7 389 388
+391 constraint 390
+392 not 7 192
+393 and 7 365 392
+394 and 7 208 393
+395 ite 1 394 141 387
+396 and 7 365 192
+397 and 7 208 396
+398 ite 1 397 8 395
+399 ite 1 226 139 398
+400 next 1 139 399
+401 and 7 208 192
+402 ite 1 401 2 148
+403 ite 1 226 148 402
+404 next 1 148 403
+405 input 1 ffb__Train__Physics__BrakesFail__fail__state_probabilisticAssignment_405
+406 eq 7 405 2
+407 eq 7 405 8
+408 or 7 407 406
+409 constraint 408
+410 eq 7 156 32
+411 eq 7 156 8
+412 or 7 411 410
+413 and 7 412 264
+414 ite 1 413 156 405
+415 ite 1 192 156 414
+416 next 1 156 415
+417 not 7 170
+418 eq 7 148 8
+419 eq 7 59 8
+420 eq 7 51 8
+421 eq 7 43 8
+422 and 7 421 420
+423 and 7 422 419
+424 and 7 423 418
+425 implies 7 424 417
+426 not 7 425
+427 bad 426

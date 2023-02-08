@@ -1,0 +1,4 @@
+read_model -i doubleFalse.nusmv
+go_msat
+check_invar_ic3 -m 4 -O 2 -i -a 1
+quit

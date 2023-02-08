@@ -1,0 +1,5 @@
+read_aiger_model -i lgs_fc3_spec1_btor2.aig
+encode_variables
+build_boolean_model
+check_invar_ic3 -m4 -O2 
+quit

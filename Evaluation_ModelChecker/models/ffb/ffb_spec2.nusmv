@@ -1,0 +1,315 @@
+MODULE ____INITCOMP__ (  )
+VAR
+state : (0) .. (1);
+ASSIGN
+init ( state ) := 1;
+next ( state ) := case
+TRUE : 0;
+esac;
+
+
+MODULE __ffb__COMP__Communication ( __INITCOMP____state,ffb__COMP__Communication__COMP__Control__COMP__ControlFail__COMP__ControlFail__fails,ffb__COMP__Train__COMP__Control__state,ffb__COMP__Communication__COMP__seemsClosed )
+VAR
+state : (0) .. (2);
+ASSIGN
+init ( state ) := 0;
+next ( state ) := case
+(__INITCOMP____state = 0) & (ffb__COMP__Communication__COMP__Control__COMP__ControlFail__COMP__ControlFail__fails) : state;
+(__INITCOMP____state = 0) & (((!ffb__COMP__Communication__COMP__Control__COMP__ControlFail__COMP__ControlFail__fails) & (state = 0)) & (ffb__COMP__Train__COMP__Control__state = 1)) : 1;
+(__INITCOMP____state = 0) & (((!ffb__COMP__Communication__COMP__Control__COMP__ControlFail__COMP__ControlFail__fails) & (state = 0)) & (ffb__COMP__Train__COMP__Control__state != 1)) : state;
+(__INITCOMP____state = 0) & (((!ffb__COMP__Communication__COMP__Control__COMP__ControlFail__COMP__ControlFail__fails) & (state = 1)) & (!ffb__COMP__Communication__COMP__seemsClosed)) : state;
+(__INITCOMP____state = 0) & (((!ffb__COMP__Communication__COMP__Control__COMP__ControlFail__COMP__ControlFail__fails) & (state = 1)) & (ffb__COMP__Communication__COMP__seemsClosed)) : 2;
+(__INITCOMP____state = 0) & ((!ffb__COMP__Communication__COMP__Control__COMP__ControlFail__COMP__ControlFail__fails) & (state = 2)) : state;
+__INITCOMP____state = 1 : state;
+esac;
+
+
+MODULE __ffb__COMP__Communication__COMP__Control__COMP__ControlFail_Obs ( __INITCOMP____state,ffb__COMP__Communication__COMP__Control__COMP__ControlFail__COMP__ControlFail__fails )
+VAR
+state : (0) .. (1);
+ASSIGN
+init ( state ) := 0;
+next ( state ) := case
+(__INITCOMP____state = 0) & ((!ffb__COMP__Communication__COMP__Control__COMP__ControlFail__COMP__ControlFail__fails) | (state = 1)) : state;
+(__INITCOMP____state = 0) & (ffb__COMP__Communication__COMP__Control__COMP__ControlFail__COMP__ControlFail__fails) : 1;
+__INITCOMP____state = 1 : state;
+esac;
+
+
+MODULE __ffb__COMP__Communication__COMP__Control__COMP__ControlFail ( ffb__COMP__Communication__COMP__Control__COMP__demand )
+VAR
+fail__state : (-1) .. (1);
+ASSIGN
+init ( fail__state ) := -1;
+next ( fail__state ) := case
+((fail__state = 0) | (fail__state = -1)) & (ffb__COMP__Communication__COMP__Control__COMP__demand) : {1,0};
+((fail__state = 0) | (fail__state = -1)) & (!ffb__COMP__Communication__COMP__Control__COMP__demand) : fail__state;
+fail__state = 1 : fail__state;
+esac;
+
+
+MODULE __ffb__COMP__Barrier__COMP__Physics__COMP__ActuatorFail_Obs ( __INITCOMP____state,ffb__COMP__Barrier__COMP__Physics__COMP__ActuatorFail__COMP__ActuatorFail__fails )
+VAR
+state : (0) .. (1);
+ASSIGN
+init ( state ) := 0;
+next ( state ) := case
+(__INITCOMP____state = 0) & ((!ffb__COMP__Barrier__COMP__Physics__COMP__ActuatorFail__COMP__ActuatorFail__fails) | (state = 1)) : state;
+(__INITCOMP____state = 0) & (ffb__COMP__Barrier__COMP__Physics__COMP__ActuatorFail__COMP__ActuatorFail__fails) : 1;
+__INITCOMP____state = 1 : state;
+esac;
+
+
+MODULE __ffb__COMP__Barrier__COMP__Physics__COMP__CloseSensorFail_Obs ( __INITCOMP____state,ffb__COMP__Barrier__COMP__Physics__COMP__CloseSensorFail__COMP__CloseSensorFail__fails )
+VAR
+state : (0) .. (1);
+ASSIGN
+init ( state ) := 0;
+next ( state ) := case
+(__INITCOMP____state = 0) & ((!ffb__COMP__Barrier__COMP__Physics__COMP__CloseSensorFail__COMP__CloseSensorFail__fails) | (state = 1)) : state;
+(__INITCOMP____state = 0) & (ffb__COMP__Barrier__COMP__Physics__COMP__CloseSensorFail__COMP__CloseSensorFail__fails) : 1;
+__INITCOMP____state = 1 : state;
+esac;
+
+
+MODULE __ffb__COMP__Barrier__COMP__Physics__COMP__PassSensorFail_Obs ( __INITCOMP____state,ffb__COMP__Barrier__COMP__Physics__COMP__PassSensorFail__COMP__PassSensorFail__fails )
+VAR
+state : (0) .. (1);
+ASSIGN
+init ( state ) := 0;
+next ( state ) := case
+(__INITCOMP____state = 0) & ((!ffb__COMP__Barrier__COMP__Physics__COMP__PassSensorFail__COMP__PassSensorFail__fails) | (state = 1)) : state;
+(__INITCOMP____state = 0) & (ffb__COMP__Barrier__COMP__Physics__COMP__PassSensorFail__COMP__PassSensorFail__fails) : 1;
+__INITCOMP____state = 1 : state;
+esac;
+
+
+MODULE __ffb__COMP__Barrier__COMP__Physics__COMP__ActuatorFail (  )
+VAR
+fail__state : (-1) .. (1);
+ASSIGN
+init ( fail__state ) := -1;
+next ( fail__state ) := case
+((fail__state = 0) | (fail__state = -1)) & (TRUE) : {1,0};
+((fail__state = 0) | (fail__state = -1)) & (!TRUE) : fail__state;
+fail__state = 1 : fail__state;
+esac;
+
+
+MODULE __ffb__COMP__Barrier__COMP__Physics__COMP__CloseSensorFail (  )
+VAR
+fail__state : (-1) .. (1);
+ASSIGN
+init ( fail__state ) := -1;
+next ( fail__state ) := case
+((fail__state = 0) | (fail__state = -1)) & (TRUE) : {1,0};
+((fail__state = 0) | (fail__state = -1)) & (!TRUE) : fail__state;
+fail__state = 1 : fail__state;
+esac;
+
+
+MODULE __ffb__COMP__Barrier__COMP__Physics__COMP__PassSensorFail (  )
+VAR
+fail__state : (-1) .. (1);
+ASSIGN
+init ( fail__state ) := -1;
+next ( fail__state ) := case
+((fail__state = 0) | (fail__state = -1)) & (TRUE) : {1,0};
+((fail__state = 0) | (fail__state = -1)) & (!TRUE) : fail__state;
+fail__state = 1 : fail__state;
+esac;
+
+
+MODULE __ffb__COMP__Barrier__COMP__Barrier__P_STATE__state ( __INITCOMP____state,ffb__COMP__Communication__state,ffb__COMP__Barrier__COMP__Physics__COMP__ActuatorFail__COMP__ActuatorFail__fails,ffb__COMP__Barrier__COMP__Barrier__P_STATE__timer__timer,ffb__COMP__Barrier__COMP__shouldOpen )
+VAR
+state : (0) .. (3);
+ASSIGN
+init ( state ) := 0;
+next ( state ) := case
+(__INITCOMP____state = 0) & ((state = 0) & (!(ffb__COMP__Communication__state = 1))) : 0;
+(__INITCOMP____state = 0) & ((state = 0) & (ffb__COMP__Communication__state = 1)) : 1;
+(__INITCOMP____state = 0) & ((state = 1) & (ffb__COMP__Barrier__COMP__Physics__COMP__ActuatorFail__COMP__ActuatorFail__fails)) : 3;
+(__INITCOMP____state = 0) & (((state = 1) & (!ffb__COMP__Barrier__COMP__Physics__COMP__ActuatorFail__COMP__ActuatorFail__fails)) & (ffb__COMP__Barrier__COMP__Barrier__P_STATE__timer__timer > 0)) : 1;
+(__INITCOMP____state = 0) & (((state = 1) & (!ffb__COMP__Barrier__COMP__Physics__COMP__ActuatorFail__COMP__ActuatorFail__fails)) & (ffb__COMP__Barrier__COMP__Barrier__P_STATE__timer__timer = 0)) : 2;
+(__INITCOMP____state = 0) & ((state = 2) & (!ffb__COMP__Barrier__COMP__shouldOpen)) : 2;
+(__INITCOMP____state = 0) & (((state = 2) & (ffb__COMP__Barrier__COMP__shouldOpen)) & (!ffb__COMP__Barrier__COMP__Physics__COMP__ActuatorFail__COMP__ActuatorFail__fails)) : 0;
+(__INITCOMP____state = 0) & (((state = 2) & (ffb__COMP__Barrier__COMP__shouldOpen)) & (ffb__COMP__Barrier__COMP__Physics__COMP__ActuatorFail__COMP__ActuatorFail__fails)) : 3;
+(__INITCOMP____state = 0) & (state = 3) : 3;
+__INITCOMP____state = 1 : state;
+esac;
+
+
+MODULE __ffb__COMP__Barrier__COMP__Barrier__P_STATE__timer ( __INITCOMP____state,ffb__COMP__Barrier__COMP__Barrier__P_STATE__state__state,ffb__COMP__Communication__state,ffb__COMP__Barrier__COMP__Physics__COMP__ActuatorFail__COMP__ActuatorFail__fails,ffb__COMP__Barrier__COMP__shouldOpen )
+VAR
+timer : (0) .. (26);
+ASSIGN
+init ( timer ) := 0;
+next ( timer ) := case
+(__INITCOMP____state = 0) & ((ffb__COMP__Barrier__COMP__Barrier__P_STATE__state__state = 0) & (!(ffb__COMP__Communication__state = 1))) : timer;
+(__INITCOMP____state = 0) & ((ffb__COMP__Barrier__COMP__Barrier__P_STATE__state__state = 0) & (ffb__COMP__Communication__state = 1)) : 5;
+(__INITCOMP____state = 0) & ((ffb__COMP__Barrier__COMP__Barrier__P_STATE__state__state = 1) & (ffb__COMP__Barrier__COMP__Physics__COMP__ActuatorFail__COMP__ActuatorFail__fails)) : 0;
+(__INITCOMP____state = 0) & (((ffb__COMP__Barrier__COMP__Barrier__P_STATE__state__state = 1) & (!ffb__COMP__Barrier__COMP__Physics__COMP__ActuatorFail__COMP__ActuatorFail__fails)) & (timer > 0)) : timer - 1;
+(__INITCOMP____state = 0) & (((ffb__COMP__Barrier__COMP__Barrier__P_STATE__state__state = 1) & (!ffb__COMP__Barrier__COMP__Physics__COMP__ActuatorFail__COMP__ActuatorFail__fails)) & (timer = 0)) : 26;
+(__INITCOMP____state = 0) & ((ffb__COMP__Barrier__COMP__Barrier__P_STATE__state__state = 2) & (!ffb__COMP__Barrier__COMP__shouldOpen)) : timer - 1;
+(__INITCOMP____state = 0) & (((ffb__COMP__Barrier__COMP__Barrier__P_STATE__state__state = 2) & (ffb__COMP__Barrier__COMP__shouldOpen)) & (!ffb__COMP__Barrier__COMP__Physics__COMP__ActuatorFail__COMP__ActuatorFail__fails)) : 0;
+(__INITCOMP____state = 0) & (((ffb__COMP__Barrier__COMP__Barrier__P_STATE__state__state = 2) & (ffb__COMP__Barrier__COMP__shouldOpen)) & (ffb__COMP__Barrier__COMP__Physics__COMP__ActuatorFail__COMP__ActuatorFail__fails)) : 0;
+(__INITCOMP____state = 0) & (ffb__COMP__Barrier__COMP__Barrier__P_STATE__state__state = 3) : timer;
+__INITCOMP____state = 1 : timer;
+esac;
+
+
+MODULE __ffb__COMP__Train__COMP__Control ( __INITCOMP____state,ffb__COMP__Train__COMP__pos,ffb__COMP__pos_close,ffb__COMP__Train__COMP__Control__COMP__closeAckReceived,ffb__COMP__pos_brake )
+VAR
+state : (0) .. (3);
+ASSIGN
+init ( state ) := 0;
+next ( state ) := case
+(__INITCOMP____state = 0) & ((state = 0) & (!(ffb__COMP__Train__COMP__pos >= ffb__COMP__pos_close))) : 0;
+(__INITCOMP____state = 0) & ((state = 0) & (ffb__COMP__Train__COMP__pos >= ffb__COMP__pos_close)) : 1;
+(__INITCOMP____state = 0) & (((state = 1) & (!ffb__COMP__Train__COMP__Control__COMP__closeAckReceived)) & (!(ffb__COMP__Train__COMP__pos >= ffb__COMP__pos_brake))) : 1;
+(__INITCOMP____state = 0) & ((state = 1) & (ffb__COMP__Train__COMP__Control__COMP__closeAckReceived)) : 2;
+(__INITCOMP____state = 0) & (((state = 1) & (!ffb__COMP__Train__COMP__Control__COMP__closeAckReceived)) & (ffb__COMP__Train__COMP__pos >= ffb__COMP__pos_brake)) : 3;
+(__INITCOMP____state = 0) & (state = 2) : 2;
+(__INITCOMP____state = 0) & (state = 3) : 3;
+__INITCOMP____state = 1 : state;
+esac;
+
+
+MODULE __ffb__COMP__Train__COMP__Physics__COMP__Position ( __INITCOMP____state,ffb__COMP__Train__COMP__Physics__COMP__Velocity__value )
+VAR
+value : (0) .. (1000);
+ASSIGN
+init ( value ) := 0;
+next ( value ) := case
+(__INITCOMP____state = 0) & (value + ffb__COMP__Train__COMP__Physics__COMP__Velocity__value < 1000) : value + ffb__COMP__Train__COMP__Physics__COMP__Velocity__value;
+(__INITCOMP____state = 0) & (value + ffb__COMP__Train__COMP__Physics__COMP__Velocity__value >= 1000) : 1000;
+__INITCOMP____state = 1 : value;
+esac;
+
+
+MODULE __ffb__COMP__Train__COMP__Physics__COMP__Velocity ( __INITCOMP____state,ffb__COMP__Train__COMP__Physics__COMP__Acceleration__value )
+VAR
+value : (0) .. (16);
+ASSIGN
+init ( value ) := 16;
+next ( value ) := case
+(__INITCOMP____state = 0) & (value + ffb__COMP__Train__COMP__Physics__COMP__Acceleration__value < 0) : 0;
+(__INITCOMP____state = 0) & ((value + ffb__COMP__Train__COMP__Physics__COMP__Acceleration__value >= 0) & (value + ffb__COMP__Train__COMP__Physics__COMP__Acceleration__value <= 16)) : value + ffb__COMP__Train__COMP__Physics__COMP__Acceleration__value;
+(__INITCOMP____state = 0) & (value + ffb__COMP__Train__COMP__Physics__COMP__Acceleration__value > 16) : 16;
+__INITCOMP____state = 1 : value;
+esac;
+
+
+MODULE __ffb__COMP__Train__COMP__Physics__COMP__Acceleration ( __INITCOMP____state,ffb__COMP__Train__COMP__Control__state,ffb__COMP__Train__COMP__Physics__COMP__BrakesFail__COMP__BrakesFail__fails )
+VAR
+value : (-1) .. (1);
+ASSIGN
+init ( value ) := 0;
+next ( value ) := case
+(__INITCOMP____state = 0) & (ffb__COMP__Train__COMP__Control__state != 3) : {0,1};
+(__INITCOMP____state = 0) & ((ffb__COMP__Train__COMP__Control__state = 3) & (!ffb__COMP__Train__COMP__Physics__COMP__BrakesFail__COMP__BrakesFail__fails)) : -1;
+(__INITCOMP____state = 0) & ((ffb__COMP__Train__COMP__Control__state = 3) & (ffb__COMP__Train__COMP__Physics__COMP__BrakesFail__COMP__BrakesFail__fails)) : 0;
+__INITCOMP____state = 1 : value;
+esac;
+
+
+MODULE __ffb__COMP__Train__COMP__Physics__COMP__BrakesFail_Obs ( __INITCOMP____state,ffb__COMP__Train__COMP__Physics__COMP__BrakesFail__COMP__BrakesFail__fails )
+VAR
+state : (0) .. (1);
+ASSIGN
+init ( state ) := 0;
+next ( state ) := case
+(__INITCOMP____state = 0) & ((!ffb__COMP__Train__COMP__Physics__COMP__BrakesFail__COMP__BrakesFail__fails) | (state = 1)) : state;
+(__INITCOMP____state = 0) & (ffb__COMP__Train__COMP__Physics__COMP__BrakesFail__COMP__BrakesFail__fails) : 1;
+__INITCOMP____state = 1 : state;
+esac;
+
+
+MODULE __ffb__COMP__Train__COMP__Physics__COMP__BrakesFail (  )
+VAR
+fail__state : (-1) .. (1);
+ASSIGN
+init ( fail__state ) := -1;
+next ( fail__state ) := case
+((fail__state = 0) | (fail__state = -1)) & (TRUE) : {1,0};
+((fail__state = 0) | (fail__state = -1)) & (!TRUE) : fail__state;
+fail__state = 1 : fail__state;
+esac;
+
+MODULE main
+VAR
+__INITCOMP__ : ____INITCOMP__();
+ffb__COMP__Communication : __ffb__COMP__Communication(__INITCOMP__.state,ffb__COMP__Communication__COMP__Control__COMP__ControlFail__COMP__ControlFail__fails,ffb__COMP__Train__COMP__Control.state,ffb__COMP__Communication__COMP__seemsClosed);
+ffb__COMP__Communication__COMP__Control__COMP__ControlFail_Obs : __ffb__COMP__Communication__COMP__Control__COMP__ControlFail_Obs(__INITCOMP__.state,ffb__COMP__Communication__COMP__Control__COMP__ControlFail__COMP__ControlFail__fails);
+ffb__COMP__Communication__COMP__Control__COMP__ControlFail : __ffb__COMP__Communication__COMP__Control__COMP__ControlFail(ffb__COMP__Communication__COMP__Control__COMP__demand);
+ffb__COMP__Barrier__COMP__Physics__COMP__ActuatorFail_Obs : __ffb__COMP__Barrier__COMP__Physics__COMP__ActuatorFail_Obs(__INITCOMP__.state,ffb__COMP__Barrier__COMP__Physics__COMP__ActuatorFail__COMP__ActuatorFail__fails);
+ffb__COMP__Barrier__COMP__Physics__COMP__CloseSensorFail_Obs : __ffb__COMP__Barrier__COMP__Physics__COMP__CloseSensorFail_Obs(__INITCOMP__.state,ffb__COMP__Barrier__COMP__Physics__COMP__CloseSensorFail__COMP__CloseSensorFail__fails);
+ffb__COMP__Barrier__COMP__Physics__COMP__PassSensorFail_Obs : __ffb__COMP__Barrier__COMP__Physics__COMP__PassSensorFail_Obs(__INITCOMP__.state,ffb__COMP__Barrier__COMP__Physics__COMP__PassSensorFail__COMP__PassSensorFail__fails);
+ffb__COMP__Barrier__COMP__Physics__COMP__ActuatorFail : __ffb__COMP__Barrier__COMP__Physics__COMP__ActuatorFail();
+ffb__COMP__Barrier__COMP__Physics__COMP__CloseSensorFail : __ffb__COMP__Barrier__COMP__Physics__COMP__CloseSensorFail();
+ffb__COMP__Barrier__COMP__Physics__COMP__PassSensorFail : __ffb__COMP__Barrier__COMP__Physics__COMP__PassSensorFail();
+ffb__COMP__Barrier__COMP__Barrier__P_STATE__state : __ffb__COMP__Barrier__COMP__Barrier__P_STATE__state(__INITCOMP__.state,ffb__COMP__Communication.state,ffb__COMP__Barrier__COMP__Physics__COMP__ActuatorFail__COMP__ActuatorFail__fails,ffb__COMP__Barrier__COMP__Barrier__P_STATE__timer.timer,ffb__COMP__Barrier__COMP__shouldOpen);
+ffb__COMP__Barrier__COMP__Barrier__P_STATE__timer : __ffb__COMP__Barrier__COMP__Barrier__P_STATE__timer(__INITCOMP__.state,ffb__COMP__Barrier__COMP__Barrier__P_STATE__state.state,ffb__COMP__Communication.state,ffb__COMP__Barrier__COMP__Physics__COMP__ActuatorFail__COMP__ActuatorFail__fails,ffb__COMP__Barrier__COMP__shouldOpen);
+ffb__COMP__Train__COMP__Control : __ffb__COMP__Train__COMP__Control(__INITCOMP__.state,ffb__COMP__Train__COMP__pos,ffb__COMP__pos_close,ffb__COMP__Train__COMP__Control__COMP__closeAckReceived,ffb__COMP__pos_brake);
+ffb__COMP__Train__COMP__Physics__COMP__Position : __ffb__COMP__Train__COMP__Physics__COMP__Position(__INITCOMP__.state,ffb__COMP__Train__COMP__Physics__COMP__Velocity.value);
+ffb__COMP__Train__COMP__Physics__COMP__Velocity : __ffb__COMP__Train__COMP__Physics__COMP__Velocity(__INITCOMP__.state,ffb__COMP__Train__COMP__Physics__COMP__Acceleration.value);
+ffb__COMP__Train__COMP__Physics__COMP__Acceleration : __ffb__COMP__Train__COMP__Physics__COMP__Acceleration(__INITCOMP__.state,ffb__COMP__Train__COMP__Control.state,ffb__COMP__Train__COMP__Physics__COMP__BrakesFail__COMP__BrakesFail__fails);
+ffb__COMP__Train__COMP__Physics__COMP__BrakesFail_Obs : __ffb__COMP__Train__COMP__Physics__COMP__BrakesFail_Obs(__INITCOMP__.state,ffb__COMP__Train__COMP__Physics__COMP__BrakesFail__COMP__BrakesFail__fails);
+ffb__COMP__Train__COMP__Physics__COMP__BrakesFail : __ffb__COMP__Train__COMP__Physics__COMP__BrakesFail();
+
+DEFINE 
+  nextPos := ffb__COMP__Train__COMP__Physics__COMP__Position.value + ffb__COMP__Train__COMP__Physics__COMP__Velocity.value;
+
+DEFINE 
+  Hazard := ((!(ffb__COMP__Barrier__COMP__Barrier__P_STATE__state.state = 2)) & (ffb__COMP__Train__COMP__Physics__COMP__Position.value <= 900)) & (nextPos > 900);
+
+DEFINE 
+  ffb__COMP__max_braking_distance := 200;
+
+DEFINE 
+  ffb__COMP__pos_brake := 900 - ffb__COMP__max_braking_distance;
+
+DEFINE 
+  ffb__COMP__pos_close := ffb__COMP__pos_brake - (11 * 16);
+
+DEFINE 
+  ffb__COMP__Communication__COMP__fails := ffb__COMP__Communication__COMP__Control__COMP__ControlFail__COMP__ControlFail__fails;
+
+DEFINE 
+  ffb__COMP__Communication__COMP__seemsClosed := (ffb__COMP__Barrier__COMP__Barrier__P_STATE__state.state = 2) | (ffb__COMP__Barrier__COMP__Physics__COMP__CloseSensorFail__COMP__CloseSensorFail__fails);
+
+DEFINE 
+  ffb__COMP__Communication__COMP__Control__COMP__shouldSendCloseRequest := (ffb__COMP__Communication.state = 0) & (ffb__COMP__Train__COMP__Control.state = 1);
+
+DEFINE 
+  ffb__COMP__Communication__COMP__Control__COMP__shouldSendCloseAck := (ffb__COMP__Communication.state = 1) & ((ffb__COMP__Barrier__COMP__Barrier__P_STATE__state.state = 2) | (ffb__COMP__Barrier__COMP__Physics__COMP__CloseSensorFail__COMP__CloseSensorFail__fails));
+
+DEFINE 
+  ffb__COMP__Communication__COMP__Control__COMP__demand := (ffb__COMP__Communication__COMP__Control__COMP__shouldSendCloseRequest) | (ffb__COMP__Communication__COMP__Control__COMP__shouldSendCloseAck);
+
+DEFINE 
+  ffb__COMP__Communication__COMP__Control__COMP__ControlFail__COMP__ControlFail__fails := ffb__COMP__Communication__COMP__Control__COMP__ControlFail.fail__state = 1;
+
+DEFINE 
+  ffb__COMP__Barrier__COMP__shouldOpen := ((ffb__COMP__Train__COMP__Physics__COMP__Position.value > 950) | ((ffb__COMP__Barrier__COMP__Barrier__P_STATE__state.state = 2) & (ffb__COMP__Barrier__COMP__Barrier__P_STATE__timer.timer = 0))) | (ffb__COMP__Barrier__COMP__Physics__COMP__PassSensorFail__COMP__PassSensorFail__fails);
+
+DEFINE 
+  ffb__COMP__Barrier__COMP__Physics__COMP__ActuatorFail__COMP__ActuatorFail__fails := ffb__COMP__Barrier__COMP__Physics__COMP__ActuatorFail.fail__state = 1;
+
+DEFINE 
+  ffb__COMP__Barrier__COMP__Physics__COMP__CloseSensorFail__COMP__CloseSensorFail__fails := ffb__COMP__Barrier__COMP__Physics__COMP__CloseSensorFail.fail__state = 1;
+
+DEFINE 
+  ffb__COMP__Barrier__COMP__Physics__COMP__PassSensorFail__COMP__PassSensorFail__fails := ffb__COMP__Barrier__COMP__Physics__COMP__PassSensorFail.fail__state = 1;
+
+DEFINE 
+  ffb__COMP__Train__COMP__pos := ffb__COMP__Train__COMP__Physics__COMP__Position.value;
+
+DEFINE 
+  ffb__COMP__Train__COMP__Control__COMP__closeAckReceived := ffb__COMP__Communication.state = 2;
+
+DEFINE 
+  ffb__COMP__Train__COMP__Physics__COMP__BrakesFail__COMP__BrakesFail__fails := ffb__COMP__Train__COMP__Physics__COMP__BrakesFail.fail__state = 1;
+
+INVARSPEC (((((ffb__COMP__Barrier__COMP__Physics__COMP__ActuatorFail_Obs.state = 0) & (ffb__COMP__Barrier__COMP__Physics__COMP__CloseSensorFail_Obs.state = 0)) & (ffb__COMP__Barrier__COMP__Physics__COMP__PassSensorFail_Obs.state = 0)) & (ffb__COMP__Train__COMP__Physics__COMP__BrakesFail_Obs.state = 0)) -> !Hazard)
+

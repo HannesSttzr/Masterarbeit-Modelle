@@ -1,0 +1,3 @@
+read_aiger airbag_nominal_btor2.aig
+pdr -d -t -x -v -L log.txt -I invar.txt
+quit

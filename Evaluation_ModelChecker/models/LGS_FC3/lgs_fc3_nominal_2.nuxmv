@@ -1,0 +1,6 @@
+read_model -i lgs_fc3_nominal.nusmv
+flatten_hierarchy
+encode_variables
+build_model
+check_invar
+quit

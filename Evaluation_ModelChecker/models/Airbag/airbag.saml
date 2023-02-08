@@ -1,0 +1,333 @@
+component main
+// car behaviour
+	constant double p_break_begin := 1.38888889E-5; // 50 times per hour
+	constant double p_break_ends := 1.38888889E-5; // 50 times per hour
+	constant double p_crash := 1.38888889E-10; // 1/1000 times per hour
+	constant double p_crash_breaking := 1.38888889E-10; // 1/500  times per hour
+// sensors
+	constant double p_mechSensor_defect := 2.77777778E-13; // EN ISO 13849-1 c
+	constant double p_mechSensor_wrong := 2.77777778E-13; // EN ISO 13849-1 c
+	constant double p_magSensor_defect := 2.77777778E-13; // EN ISO 13849-1 c
+	constant double p_magSensor_wrong := 2.77777778E-13; // EN ISO 13849-1 c
+//crash detection
+	constant int detection_interval := 5;
+	constant int sensorTrash := 4;
+	constant double p_detectorA_wrong := 2.77777778E-13; // EN ISO 13849-1 c
+	constant double p_detectorB_wrong := 2.77777778E-13; // EN ISO 13849-1 c
+	constant double p_detectionMonitor_wrong := 2.77777778E-13; // EN ISO 13849-1 c
+//airbag
+	constant double p_airbag_defect := 2.77777778E-12; // EN ISO 13849-1 e
+	constant double p_airbag_selfIgnition := 2.77777778E-12; // EN ISO 13849-1 e
+//------------
+// Observer for false pos
+//------------
+	component airbag_observe
+		airbag_observe_state: [0 .. 16] init 0; // 1..4 zaehlen bis Airbag aufgeblasen, 15 Fehler, 16 safe
+		main.crash.state = 0 & airbag_observe_state = 0 -> choice: (1: (airbag_observe_state' = 0)); // kein crash -> bleib
+		main.crash.state = 1 & airbag_observe_state = 0 -> choice: (1: (airbag_observe_state' = 1)); // beginne zu zaehlen wenn crash
+		main.airbag.state = 0 & airbag_observe_state > 0 & airbag_observe_state < 15 // kein Airbag -> weiterzaehlen
+		-> choice: (1: (airbag_observe_state' = airbag_observe_state + 1));
+
+		main.airbag.state = 1 & airbag_observe_state > 0 & airbag_observe_state < 15 // Airbag da -> safe state
+		-> choice: (1: (airbag_observe_state' = 16));
+
+		airbag_observe_state = 15 -> choice: (1: (airbag_observe_state' = airbag_observe_state)); // Fehlerstate
+		airbag_observe_state = 16 -> choice: (1: (airbag_observe_state' = airbag_observe_state)); // safe state
+	endcomponent
+
+//--------------------------------------------------------------------------------------------
+//car model
+//--------------------------------------------------------------------------------------------
+	component drive
+		state: [0 .. 1] init 1;
+		main.break.state = 0 & main.crash.state = 0 -> (state' = 1);
+		main.break.state = 1 | main.crash.state = 1 -> (state' = 0);
+	endcomponent
+
+	component break // strong breaking
+		state: [0 .. 1] init 0;
+		main.drive.state = 0 & state = 0 -> (state' = 0);
+		main.drive.state = 1 & state = 0 -> main.p_break_begin: (state' = 1) + 1 - main.p_break_begin: (state' = 0);
+		main.break.state = 1 -> main.p_break_ends: (state' = 0) + (1 - main.p_break_ends): (state' = 1);
+	endcomponent
+
+	component crash
+		state: [0 .. 1] init 0;
+		state = 0 & main.break.state = 0 -> main.p_crash: (state' = 1) + (1 - main.p_crash): (state' = 0);
+		state = 0 & main.break.state = 1 -> main.p_crash_breaking: (state' = 1)
+			+ 1 - main.p_crash_breaking: (state' = 0);
+		state = 1 -> (state' = 1);
+	endcomponent
+
+//--------------------------------------------------------------------------------------------
+// mechanic sensor with errorstates wrong and defect
+//--------------------------------------------------------------------------------------------
+//error states
+	failure error_mechSensor_defect
+		occurs perdemand true probability main.p_mechSensor_defect;
+	endfailure
+
+    component error_mechSensor_defect_Obs
+        state: [0..1] init 0;
+        (!main.error_mechSensor_defect | state = 1) -> state = state;
+        main.error_mechSensor_defect -> state = 1;
+    endcomponent
+
+	failure error_mechSensor_wrong
+		occurs perdemand true probability main.p_mechSensor_wrong;
+		recovers perdemand true probability 1 - main.p_mechSensor_wrong;
+	endfailure
+
+    component error_mechSensor_wrong_Obs
+        state: [0..1] init 0;
+        (!main.error_mechSensor_wrong | state = 1) -> state = state;
+        main.error_mechSensor_wrong -> state = 1;
+    endcomponent
+
+//sensor
+	component mechSensor
+		state: [0 .. 2] init 0; // 0 - no crash, 1 - crash, 2 - no signal
+		// behaviour of sensor if not wrong
+		main.crash.state = 0 & !main.error_mechSensor_wrong & !main.error_mechSensor_defect -> (state' = 0);
+		main.crash.state = 1 & !main.error_mechSensor_wrong & !main.error_mechSensor_defect -> (state' = 1);
+		// behaviour of sensor if wrong
+		main.crash.state = 0 & main.error_mechSensor_wrong & !main.error_mechSensor_defect -> (state' = 1);
+		main.crash.state = 1 & main.error_mechSensor_wrong & !main.error_mechSensor_defect -> (state' = 0);
+		// behaviour of sensor if defect
+		main.error_mechSensor_defect -> (state' = 2);
+	endcomponent
+
+//--------------------------------------------------------------------------------------------
+// magnetic sensor with errorstates wrong and defect
+//--------------------------------------------------------------------------------------------
+//error states
+	failure error_magSensor_defect
+		occurs perdemand true probability main.p_magSensor_defect;
+	endfailure
+
+    component error_magSensor_defect_Obs
+        state: [0..1] init 0;
+        (!main.error_magSensor_defect | state = 1) -> state = state;
+        main.error_magSensor_defect -> state = 1;
+    endcomponent
+
+	failure error_magSensor_wrong
+		occurs perdemand true probability main.p_magSensor_wrong;
+		recovers perdemand true probability 1 - main.p_magSensor_wrong;
+	endfailure
+
+    component error_magSensor_wrong_Obs
+        state: [0..1] init 0;
+        (!main.error_magSensor_wrong | state = 1) -> state = state;
+        main.error_magSensor_wrong -> state = 1;
+    endcomponent
+
+//sensor
+	component magSensor
+		state: [0 .. 2] init 0; // 0 - no crash, 1 - crash, 2 - no signal
+		// behaviour of sensor if not wrong
+		main.crash.state = 0 & !main.error_magSensor_wrong & !main.error_magSensor_defect -> (state' = 0);
+		main.crash.state = 1 & !main.error_magSensor_wrong & !main.error_magSensor_defect -> (state' = 1);
+		// behaviour of sensor if wrong
+		main.crash.state = 0 & main.error_magSensor_wrong & !main.error_magSensor_defect -> (state' = 1);
+		main.crash.state = 1 & main.error_magSensor_wrong & !main.error_magSensor_defect -> (state' = 0);
+		// behaviour of sensor if defect
+		main.error_magSensor_defect -> (state' = 2);
+	endcomponent
+
+//--------------------------------------------------------------------------------------------
+// sensor validation
+//--------------------------------------------------------------------------------------------
+	component SensorValidator
+		state: [0 .. 1] init 0;
+		main.mechSensor.state = 1 & main.magSensor.state = 1 -> choice: (1: (state' = 1));
+		!(main.mechSensor.state = 1 & main.magSensor.state = 1) -> choice: (1: (state' = 0));
+	endcomponent
+
+	component ValidatorSum
+		counter: [0 .. 6] init 0; // max is calculated by detection_interval+1
+		sum: [0 .. 5] init 0; // max is calculated by detection_interval
+		counter < main.detection_interval & sum < main.detection_interval -> (counter' = counter + 1)
+			& (sum' = sum + main.SensorValidator.state);
+		counter < main.detection_interval & sum >= main.detection_interval -> (counter' = counter + 1) & (sum' = sum);
+		counter >= main.detection_interval -> (counter' = 0)
+			& (sum' = main.SensorValidator.state);
+	endcomponent
+
+//--------------------------------------------------------------------------------------------
+// crash detection with errorstate wrong
+//--------------------------------------------------------------------------------------------
+//crash detector A
+	failure error_crashDetectionA_wrong
+		occurs perdemand true probability main.p_detectorA_wrong;
+		recovers perdemand true probability 1 - main.p_detectorA_wrong;
+	endfailure
+
+    component error_crashDetectionA_wrong_Obs
+        state: [0..1] init 0;
+        (!main.error_crashDetectionA_wrong | state = 1) -> state = state;
+        main.error_crashDetectionA_wrong -> state = 1;
+    endcomponent
+
+//double detection of crash by checking actual state + majority of last "sensorTrash + 1" states (implemented as 5 with lesser trash)
+	component crashDetectionA
+		state: [0 .. 1] init 0;
+		// behavior of detector if not wrong
+		!main.error_crashDetectionA_wrong & main.SensorValidator.state = 1 & main.ValidatorSum.sum > main.sensorTrash - 1 & main.ValidatorSum.counter = main.detection_interval ->
+			(state' = 1);
+		!main.error_crashDetectionA_wrong & (main.SensorValidator.state = 0 | main.ValidatorSum.sum <= main.sensorTrash - 1 | !main.ValidatorSum.counter = main.detection_interval) ->
+			(state' = 0);
+		// behavior of detector if wrong
+		main.error_crashDetectionA_wrong & main.SensorValidator.state = 1 & main.ValidatorSum.sum > main.sensorTrash - 1 & main.ValidatorSum.counter = main.detection_interval ->
+			(state' = 0);
+		main.error_crashDetectionA_wrong & (main.SensorValidator.state = 0 | main.ValidatorSum.sum <= main.sensorTrash - 1 | !main.ValidatorSum.counter = main.detection_interval) ->
+			(state' = 1);
+	endcomponent
+
+//crash detector B
+	failure error_crashDetectionB_wrong
+		occurs perdemand true probability main.p_detectorB_wrong;
+		recovers perdemand true probability 1 - main.p_detectorB_wrong;
+	endfailure
+
+    component error_crashDetectionB_wrong_Obs
+        state: [0..1] init 0;
+        (!main.error_crashDetectionB_wrong | state = 1) -> state = state;
+        main.error_crashDetectionB_wrong -> state = 1;
+    endcomponent
+
+//double detection of crash by checking actual state + majority of last "sensorTrash" + 1 states (implemented as 5 with lesser trash)
+	component crashDetectionB
+		state: [0 .. 1] init 0;
+		// behaviour of detector if not wrong
+		!main.error_crashDetectionB_wrong & main.SensorValidator.state = 1 & main.ValidatorSum.sum > main.sensorTrash - 1 & main.ValidatorSum.counter = main.detection_interval ->
+			(state' = 1);
+		!main.error_crashDetectionB_wrong & (main.SensorValidator.state = 0 | main.ValidatorSum.sum <= main.sensorTrash - 1 | !main.ValidatorSum.counter = main.detection_interval) ->
+			(state' = 0);
+		// behaviour of detector if wrong
+		main.error_crashDetectionB_wrong & main.SensorValidator.state = 1 & main.ValidatorSum.sum > main.sensorTrash - 1 & main.ValidatorSum.counter = main.detection_interval ->
+			(state' = 0);
+		main.error_crashDetectionB_wrong & (main.SensorValidator.state = 0 | main.ValidatorSum.sum <= main.sensorTrash - 1 | !main.ValidatorSum.counter = main.detection_interval) ->
+			(state' = 1);
+	endcomponent
+
+//detection monitor
+	failure error_crashDetectionMonitor_wrong
+		occurs perdemand true probability main.p_detectionMonitor_wrong;
+		recovers perdemand true probability 1 - main.p_detectionMonitor_wrong;
+	endfailure
+
+    component error_crashDetectionMonitor_wrong_Obs
+        state: [0..1] init 0;
+        (!main.error_crashDetectionMonitor_wrong | state = 1) -> state = state;
+        main.error_crashDetectionMonitor_wrong -> state = 1;
+    endcomponent
+
+//crash detection monitor
+	component crashDetectionMonitor
+		state: [0 .. 1] init 0;
+		// behavior of monitor if not wrong
+		!main.error_crashDetectionMonitor_wrong & main.crashDetectionA.state = 1 & main.crashDetectionB.state = 1 ->
+			(state' = 1);
+		!main.error_crashDetectionMonitor_wrong & !(main.crashDetectionA.state = 1 & main.crashDetectionB.state = 1) ->
+			(state' = 0);
+		// behavior of monitor if wrong
+		main.error_crashDetectionMonitor_wrong & main.crashDetectionA.state = 1 & main.crashDetectionB.state = 1 ->
+			(state' = 0);
+		main.error_crashDetectionMonitor_wrong & !(main.crashDetectionA.state = 1 & main.crashDetectionB.state = 1) ->
+			(state' = 1);
+	endcomponent
+
+//--------------------------------------------------------------------------------------------
+// airbag with errorstate wrong
+//--------------------------------------------------------------------------------------------
+	component error_airbag_defect // demand persistent
+		state: [-1 .. 1] init -1;
+
+		state < 0 -> main.p_airbag_defect: (state' = 1) + 1 - main.p_airbag_defect: (state' = 0);
+
+		(state = 0 & main.crashDetectionMonitor.state = 0) -> (state' = state);
+		(state = 0 & main.crashDetectionMonitor.state = 1) -> main.p_airbag_defect: (state' = 1)
+			+ 1 - main.p_airbag_defect: (state' = 0);
+		(state = 1) -> (state' = 1);
+	endcomponent
+
+	failure error_airbag_selfIgnition
+		occurs perdemand true probability main.p_airbag_selfIgnition;
+	endfailure
+
+    component error_airbag_selfIgnition_Obs
+        state: [0..1] init 0;
+        (!main.error_airbag_selfIgnition | state = 1) -> state = state;
+        main.error_airbag_selfIgnition -> state = 1;
+    endcomponent
+
+	component airbag
+		state: [0 .. 1] init 0;
+
+		!main.error_airbag_selfIgnition & main.crashDetectionMonitor.state = 1 & main.error_airbag_defect.state < 1 ->
+			(state' = 1);
+		!main.error_airbag_selfIgnition & main.crashDetectionMonitor.state = 1 & main.error_airbag_defect.state = 1 ->
+			(state' = 0);
+		!main.error_airbag_selfIgnition & main.crashDetectionMonitor.state = 0 -> (state' = 0);
+		main.error_airbag_selfIgnition -> (state' = 1);
+	endcomponent
+
+//--------------------------------------------------------------------------------------------
+endcomponent
+
+formula H_false_pos := main.crash.state = 0 & main.airbag.state = 1;
+formula H_false_pos_2 := main.crash.state = 1 & main.airbag.state = 1;
+formula H_false_pos_3 := main.crash.state = 1 & main.airbag.state = 0;
+formula H_false_neg := main.airbag_observe.airbag_observe_state = 15;
+formula H_false_neg_2 := main.airbag_observe.airbag_observe_state = 16;
+
+
+// nominal SPEC
+// true step 7
+SPEC AG ((main.error_airbag_selfIgnition_Obs.state = 0 & main.error_crashDetectionMonitor_wrong_Obs.state = 0 & main.error_crashDetectionB_wrong_Obs.state = 0 & main.error_crashDetectionA_wrong_Obs.state = 0 & main.error_magSensor_wrong_Obs.state = 0 & main.error_magSensor_defect_Obs.state = 0 & main.error_mechSensor_wrong_Obs.state = 0 & main.error_mechSensor_defect_Obs.state = 0) => (!H_false_pos));
+
+// SPEC 1
+// CS size 1: main.error_airbag_selfIgnition_Obs.state
+//SPEC AG ((main.error_crashDetectionMonitor_wrong_Obs.state = 0 & main.error_crashDetectionB_wrong_Obs.state = 0 & main.error_crashDetectionA_wrong_Obs.state = 0 & main.error_magSensor_wrong_Obs.state = 0 & main.error_magSensor_defect_Obs.state = 0 & main.error_mechSensor_wrong_Obs.state = 0 & main.error_mechSensor_defect_Obs.state = 0) => (!H_false_pos));
+
+// SPEC 2
+// kein CS size 1: main.error_crashDetectionB_wrong_Obs.state
+//SPEC AG ((main.error_airbag_selfIgnition_Obs.state = 0 & main.error_crashDetectionMonitor_wrong_Obs.state = 0 & main.error_crashDetectionA_wrong_Obs.state = 0 & main.error_magSensor_wrong_Obs.state = 0 & main.error_magSensor_defect_Obs.state = 0 & main.error_mechSensor_wrong_Obs.state = 0 & main.error_mechSensor_defect_Obs.state = 0) => (!H_false_pos));
+
+// SPEC3
+//SPEC AG ((main.error_airbag_selfIgnition_Obs.state = 0 & main.error_crashDetectionMonitor_wrong_Obs.state = 0 & main.error_magSensor_wrong_Obs.state = 0 & main.error_magSensor_defect_Obs.state = 0 & main.error_mechSensor_wrong_Obs.state = 0 & main.error_mechSensor_defect_Obs.state = 0) => (!H_false_pos));
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// SPEC 2
+// false step 16
+//SPEC AG ((!main.error_airbag_selfIgnition & main.error_airbag_selfIgnition_Obs.state = 0 & !main.error_crashDetectionMonitor_wrong & main.error_crashDetectionMonitor_wrong_Obs.state = 0 & !main.error_crashDetectionB_wrong & main.error_crashDetectionB_wrong_Obs.state = 0 & !main.error_crashDetectionA_wrong & main.error_crashDetectionA_wrong_Obs.state = 0 & !main.error_magSensor_wrong & main.error_magSensor_wrong_Obs.state = 0 & !main.error_magSensor_defect & main.error_magSensor_defect_Obs.state = 0 & !main.error_mechSensor_wrong & main.error_mechSensor_wrong_Obs.state = 0 & !main.error_mechSensor_defect & main.error_mechSensor_defect_Obs.state = 0) => (!H_false_pos_2));
+// false step 3
+//SPEC AG !H_false_pos_2;
+
+// SPEC 3
+// false step 18
+//SPEC AG ((!main.error_airbag_selfIgnition & main.error_airbag_selfIgnition_Obs.state = 0 & !main.error_crashDetectionMonitor_wrong & main.error_crashDetectionMonitor_wrong_Obs.state = 0 & !main.error_crashDetectionB_wrong & main.error_crashDetectionB_wrong_Obs.state = 0 & !main.error_crashDetectionA_wrong & main.error_crashDetectionA_wrong_Obs.state = 0 & !main.error_magSensor_wrong & main.error_magSensor_wrong_Obs.state = 0 & !main.error_magSensor_defect & main.error_magSensor_defect_Obs.state = 0 & !main.error_mechSensor_wrong & main.error_mechSensor_wrong_Obs.state = 0 & !main.error_mechSensor_defect & main.error_mechSensor_defect_Obs.state = 0) => (!H_false_neg));
+//SPEC AG !H_false_neg;
+
+// SPEC 4
+// false step 3
+//SPEC AG ((!main.error_airbag_selfIgnition & main.error_airbag_selfIgnition_Obs.state = 0 & !main.error_crashDetectionMonitor_wrong & main.error_crashDetectionMonitor_wrong_Obs.state = 0 & !main.error_crashDetectionB_wrong & main.error_crashDetectionB_wrong_Obs.state = 0 & !main.error_crashDetectionA_wrong & main.error_crashDetectionA_wrong_Obs.state = 0 & !main.error_magSensor_wrong & main.error_magSensor_wrong_Obs.state = 0 & !main.error_magSensor_defect & main.error_magSensor_defect_Obs.state = 0 & !main.error_mechSensor_wrong & main.error_mechSensor_wrong_Obs.state = 0 & !main.error_mechSensor_defect & main.error_mechSensor_defect_Obs.state = 0) => (!H_false_pos_3));
+//SPEC AG !H_false_pos_3;
+
+// SPEC 5
+// false step 17
+//SPEC AG ((!main.error_airbag_selfIgnition & main.error_airbag_selfIgnition_Obs.state = 0 & !main.error_crashDetectionMonitor_wrong & main.error_crashDetectionMonitor_wrong_Obs.state = 0 & !main.error_crashDetectionB_wrong & main.error_crashDetectionB_wrong_Obs.state = 0 & !main.error_crashDetectionA_wrong & main.error_crashDetectionA_wrong_Obs.state = 0 & !main.error_magSensor_wrong & main.error_magSensor_wrong_Obs.state = 0 & !main.error_magSensor_defect & main.error_magSensor_defect_Obs.state = 0 & !main.error_mechSensor_wrong & main.error_mechSensor_wrong_Obs.state = 0 & !main.error_mechSensor_defect & main.error_mechSensor_defect_Obs.state = 0) => (!H_false_neg_2));
+//SPEC AG !H_false_neg_2;

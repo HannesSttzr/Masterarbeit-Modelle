@@ -1,0 +1,4 @@
+read_model -i dcca2.nusmv
+go_msat
+check_invar_ic3  -m4 -O2  -i -a 1 
+quit

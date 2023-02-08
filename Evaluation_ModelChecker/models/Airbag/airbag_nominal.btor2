@@ -1,0 +1,671 @@
+1 sort bitvec 2
+2 constd 1 1
+3 sort bitvec 2
+5 state 3 __INITCOMP____state
+6 init 3 5 2
+7 sort bitvec 1
+8 constd 1 0
+9 sgte 7 5 8
+10 slte 7 5 2
+11 and 7 9 10
+12 constraint 11
+13 sort bitvec 6
+14 sext 13 8 4
+15 state 13 main__airbag_observe__airbag_observe_state
+16 init 13 15 14
+17 sort bitvec 6
+18 constd 17 16
+19 constd 17 0
+20 sgte 7 15 19
+21 slte 7 15 18
+22 and 7 20 21
+23 constraint 22
+24 sort bitvec 2
+26 state 24 main__drive__state
+27 init 24 26 2
+28 sgte 7 26 8
+29 slte 7 26 2
+30 and 7 28 29
+31 constraint 30
+32 sort bitvec 2
+34 state 32 main__break__state
+35 init 32 34 8
+36 sgte 7 34 8
+37 slte 7 34 2
+38 and 7 36 37
+39 constraint 38
+40 sort bitvec 2
+42 state 40 main__crash__state
+43 init 40 42 8
+44 sgte 7 42 8
+45 slte 7 42 2
+46 and 7 44 45
+47 constraint 46
+48 sort bitvec 2
+50 state 48 main__error_mechSensor_defect_Obs__state
+51 init 48 50 8
+52 sgte 7 50 8
+53 slte 7 50 2
+54 and 7 52 53
+55 constraint 54
+56 sort bitvec 2
+58 state 56 main__error_mechSensor_wrong_Obs__state
+59 init 56 58 8
+60 sgte 7 58 8
+61 slte 7 58 2
+62 and 7 60 61
+63 constraint 62
+64 sort bitvec 3
+65 sext 64 8 1
+66 state 64 main__mechSensor__state
+67 init 64 66 65
+68 sort bitvec 3
+69 constd 68 2
+70 constd 68 0
+71 sgte 7 66 70
+72 slte 7 66 69
+73 and 7 71 72
+74 constraint 73
+75 sort bitvec 2
+77 state 75 main__error_magSensor_defect_Obs__state
+78 init 75 77 8
+79 sgte 7 77 8
+80 slte 7 77 2
+81 and 7 79 80
+82 constraint 81
+83 sort bitvec 2
+85 state 83 main__error_magSensor_wrong_Obs__state
+86 init 83 85 8
+87 sgte 7 85 8
+88 slte 7 85 2
+89 and 7 87 88
+90 constraint 89
+91 sort bitvec 3
+92 sext 91 8 1
+93 state 91 main__magSensor__state
+94 init 91 93 92
+95 sgte 7 93 70
+96 slte 7 93 69
+97 and 7 95 96
+98 constraint 97
+99 sort bitvec 2
+101 state 99 main__SensorValidator__state
+102 init 99 101 8
+103 sgte 7 101 8
+104 slte 7 101 2
+105 and 7 103 104
+106 constraint 105
+107 sort bitvec 4
+108 sext 107 8 2
+109 state 107 main__ValidatorSum__ValidatorSum__P_STATE__counter__counter
+110 init 107 109 108
+111 sort bitvec 4
+112 constd 111 6
+113 constd 111 0
+114 sgte 7 109 113
+115 slte 7 109 112
+116 and 7 114 115
+117 constraint 116
+118 sort bitvec 4
+119 sext 118 8 2
+120 state 118 main__ValidatorSum__ValidatorSum__P_STATE__sum__sum
+121 init 118 120 119
+122 constd 111 5
+123 sgte 7 120 113
+124 slte 7 120 122
+125 and 7 123 124
+126 constraint 125
+127 sort bitvec 2
+129 state 127 main__error_crashDetectionA_wrong_Obs__state
+130 init 127 129 8
+131 sgte 7 129 8
+132 slte 7 129 2
+133 and 7 131 132
+134 constraint 133
+135 sort bitvec 2
+137 state 135 main__crashDetectionA__state
+138 init 135 137 8
+139 sgte 7 137 8
+140 slte 7 137 2
+141 and 7 139 140
+142 constraint 141
+143 sort bitvec 2
+145 state 143 main__error_crashDetectionB_wrong_Obs__state
+146 init 143 145 8
+147 sgte 7 145 8
+148 slte 7 145 2
+149 and 7 147 148
+150 constraint 149
+151 sort bitvec 2
+153 state 151 main__crashDetectionB__state
+154 init 151 153 8
+155 sgte 7 153 8
+156 slte 7 153 2
+157 and 7 155 156
+158 constraint 157
+159 sort bitvec 2
+161 state 159 main__error_crashDetectionMonitor_wrong_Obs__state
+162 init 159 161 8
+163 sgte 7 161 8
+164 slte 7 161 2
+165 and 7 163 164
+166 constraint 165
+167 sort bitvec 2
+169 state 167 main__crashDetectionMonitor__state
+170 init 167 169 8
+171 sgte 7 169 8
+172 slte 7 169 2
+173 and 7 171 172
+174 constraint 173
+175 neg 1 2
+176 sort bitvec 2
+178 state 176 main__error_airbag_defect__state
+179 init 176 178 175
+180 sgte 7 178 175
+181 slte 7 178 2
+182 and 7 180 181
+183 constraint 182
+184 sort bitvec 2
+186 state 184 main__error_airbag_selfIgnition_Obs__state
+187 init 184 186 8
+188 sgte 7 186 8
+189 slte 7 186 2
+190 and 7 188 189
+191 constraint 190
+192 sort bitvec 2
+194 state 192 main__airbag__state
+195 init 192 194 8
+196 sgte 7 194 8
+197 slte 7 194 2
+198 and 7 196 197
+199 constraint 198
+200 constd 1 -1
+201 sort bitvec 2
+203 state 201 main__error_mechSensor_defect__fail__state
+204 init 201 203 200
+205 sgte 7 203 200
+206 slte 7 203 2
+207 and 7 205 206
+208 constraint 207
+209 sort bitvec 2
+211 state 209 main__error_mechSensor_wrong__fail__state
+212 init 209 211 200
+213 sgte 7 211 200
+214 slte 7 211 2
+215 and 7 213 214
+216 constraint 215
+217 sort bitvec 2
+219 state 217 main__error_magSensor_defect__fail__state
+220 init 217 219 200
+221 sgte 7 219 200
+222 slte 7 219 2
+223 and 7 221 222
+224 constraint 223
+225 sort bitvec 2
+227 state 225 main__error_magSensor_wrong__fail__state
+228 init 225 227 200
+229 sgte 7 227 200
+230 slte 7 227 2
+231 and 7 229 230
+232 constraint 231
+233 sort bitvec 2
+235 state 233 main__error_crashDetectionA_wrong__fail__state
+236 init 233 235 200
+237 sgte 7 235 200
+238 slte 7 235 2
+239 and 7 237 238
+240 constraint 239
+241 sort bitvec 2
+243 state 241 main__error_crashDetectionB_wrong__fail__state
+244 init 241 243 200
+245 sgte 7 243 200
+246 slte 7 243 2
+247 and 7 245 246
+248 constraint 247
+249 sort bitvec 2
+251 state 249 main__error_crashDetectionMonitor_wrong__fail__state
+252 init 249 251 200
+253 sgte 7 251 200
+254 slte 7 251 2
+255 and 7 253 254
+256 constraint 255
+257 sort bitvec 2
+259 state 257 main__error_airbag_selfIgnition__fail__state
+260 init 257 259 200
+261 sgte 7 259 200
+262 slte 7 259 2
+263 and 7 261 262
+264 constraint 263
+265 eq 7 194 2
+266 eq 7 42 8
+267 and 7 266 265
+268 eq 7 42 2
+269 and 7 268 265
+270 eq 7 194 8
+271 and 7 268 270
+272 sort bitvec 5
+273 constd 272 15
+274 sext 17 273 1
+275 eq 7 15 274
+276 eq 7 15 18
+277 eq 7 203 2
+278 eq 7 211 2
+279 eq 7 219 2
+280 eq 7 227 2
+281 eq 7 235 2
+282 eq 7 243 2
+283 eq 7 251 2
+284 eq 7 259 2
+285 next 1 5 8
+286 sext 17 8 4
+287 sext 17 2 4
+288 eq 7 15 286
+289 and 7 268 288
+290 eq 7 5 8
+291 and 7 290 289
+292 ite 17 291 287 286
+293 constd 17 1
+294 add 17 15 293
+295 slt 7 15 274
+296 sgt 7 15 286
+297 and 7 270 296
+298 and 7 297 295
+299 and 7 290 298
+300 ite 17 299 294 292
+301 and 7 265 296
+302 and 7 301 295
+303 and 7 290 302
+304 ite 17 303 18 300
+305 and 7 290 275
+306 ite 17 305 15 304
+307 and 7 290 276
+308 ite 17 307 15 306
+309 eq 7 5 2
+310 ite 17 309 15 308
+311 next 17 15 310
+312 eq 7 34 2
+313 or 7 312 268
+314 and 7 290 313
+315 ite 1 314 8 2
+316 ite 1 309 26 315
+317 next 1 26 316
+318 input 1 main__break__state_probabilisticAssignment_318
+319 eq 7 318 2
+320 eq 7 318 8
+321 or 7 320 319
+322 constraint 321
+323 eq 7 34 8
+324 eq 7 26 2
+325 and 7 324 323
+326 and 7 290 325
+327 ite 1 326 318 8
+328 input 1 main__break__state_probabilisticAssignment_328
+329 eq 7 328 8
+330 eq 7 328 2
+331 or 7 330 329
+332 constraint 331
+333 and 7 290 312
+334 ite 1 333 328 327
+335 ite 1 309 34 334
+336 next 1 34 335
+337 input 1 main__crash__state_probabilisticAssignment_337
+338 eq 7 337 2
+339 eq 7 337 8
+340 or 7 339 338
+341 constraint 340
+342 input 1 main__crash__state_probabilisticAssignment_342
+343 eq 7 342 2
+344 eq 7 342 8
+345 or 7 344 343
+346 constraint 345
+347 and 7 266 312
+348 and 7 290 347
+349 ite 1 348 342 337
+350 and 7 290 268
+351 ite 1 350 2 349
+352 ite 1 309 42 351
+353 next 1 42 352
+354 and 7 290 277
+355 ite 1 354 2 50
+356 ite 1 309 50 355
+357 next 1 50 356
+358 and 7 290 278
+359 ite 1 358 2 58
+360 ite 1 309 58 359
+361 next 1 58 360
+362 sext 68 8 1
+363 sext 68 2 1
+364 not 7 277
+365 not 7 278
+366 and 7 268 365
+367 and 7 366 364
+368 and 7 290 367
+369 ite 68 368 363 362
+370 and 7 266 278
+371 and 7 370 364
+372 and 7 290 371
+373 ite 68 372 363 369
+374 and 7 268 278
+375 and 7 374 364
+376 and 7 290 375
+377 ite 68 376 362 373
+378 ite 68 354 69 377
+379 ite 68 309 66 378
+380 next 68 66 379
+381 and 7 290 279
+382 ite 1 381 2 77
+383 ite 1 309 77 382
+384 next 1 77 383
+385 and 7 290 280
+386 ite 1 385 2 85
+387 ite 1 309 85 386
+388 next 1 85 387
+389 not 7 279
+390 not 7 280
+391 and 7 268 390
+392 and 7 391 389
+393 and 7 290 392
+394 ite 68 393 363 362
+395 and 7 266 280
+396 and 7 395 389
+397 and 7 290 396
+398 ite 68 397 363 394
+399 and 7 268 280
+400 and 7 399 389
+401 and 7 290 400
+402 ite 68 401 362 398
+403 ite 68 381 69 402
+404 ite 68 309 93 403
+405 next 68 93 404
+406 eq 7 93 363
+407 eq 7 66 363
+408 and 7 407 406
+409 not 7 408
+410 and 7 290 409
+411 ite 1 410 8 2
+412 ite 1 309 101 411
+413 next 1 101 412
+414 constd 111 1
+415 add 111 109 414
+416 sgte 7 120 122
+417 slt 7 109 122
+418 and 7 417 416
+419 and 7 290 418
+420 ite 111 419 415 415
+421 sext 111 8 2
+422 sgte 7 109 122
+423 and 7 290 422
+424 ite 111 423 421 420
+425 ite 111 309 109 424
+426 next 111 109 425
+427 sext 111 101 2
+428 add 111 120 427
+429 ite 111 419 120 428
+430 ite 111 423 427 429
+431 ite 111 309 120 430
+432 next 111 120 431
+433 and 7 290 281
+434 ite 1 433 2 129
+435 ite 1 309 129 434
+436 next 1 129 435
+437 eq 7 109 122
+438 not 7 437
+439 constd 111 4
+440 sub 111 439 414
+441 slice 68 440 2 0
+442 sext 111 441 1
+443 slte 7 120 442
+444 eq 7 101 8
+445 or 7 444 443
+446 or 7 445 438
+447 not 7 281
+448 and 7 447 446
+449 and 7 290 448
+450 ite 1 449 8 2
+451 sgt 7 120 442
+452 eq 7 101 2
+453 and 7 281 452
+454 and 7 453 451
+455 and 7 454 437
+456 and 7 290 455
+457 ite 1 456 8 450
+458 and 7 281 446
+459 and 7 290 458
+460 ite 1 459 2 457
+461 ite 1 309 137 460
+462 next 1 137 461
+463 and 7 290 282
+464 ite 1 463 2 145
+465 ite 1 309 145 464
+466 next 1 145 465
+467 not 7 282
+468 and 7 467 446
+469 and 7 290 468
+470 ite 1 469 8 2
+471 and 7 282 452
+472 and 7 471 451
+473 and 7 472 437
+474 and 7 290 473
+475 ite 1 474 8 470
+476 and 7 282 446
+477 and 7 290 476
+478 ite 1 477 2 475
+479 ite 1 309 153 478
+480 next 1 153 479
+481 and 7 290 283
+482 ite 1 481 2 161
+483 ite 1 309 161 482
+484 next 1 161 483
+485 eq 7 153 2
+486 eq 7 137 2
+487 and 7 486 485
+488 not 7 487
+489 not 7 283
+490 and 7 489 488
+491 and 7 290 490
+492 ite 1 491 8 2
+493 and 7 283 486
+494 and 7 493 485
+495 and 7 290 494
+496 ite 1 495 8 492
+497 and 7 283 488
+498 and 7 290 497
+499 ite 1 498 2 496
+500 ite 1 309 169 499
+501 next 1 169 500
+502 input 1 main__error_airbag_defect__state_probabilisticAssignment_502
+503 eq 7 502 2
+504 eq 7 502 8
+505 or 7 504 503
+506 constraint 505
+507 eq 7 169 8
+508 eq 7 178 8
+509 and 7 508 507
+510 and 7 290 509
+511 ite 1 510 178 502
+512 input 1 main__error_airbag_defect__state_probabilisticAssignment_512
+513 eq 7 512 2
+514 eq 7 512 8
+515 or 7 514 513
+516 constraint 515
+517 eq 7 169 2
+518 and 7 508 517
+519 and 7 290 518
+520 ite 1 519 512 511
+521 eq 7 178 2
+522 and 7 290 521
+523 ite 1 522 2 520
+524 ite 1 309 178 523
+525 next 1 178 524
+526 and 7 290 284
+527 ite 1 526 2 186
+528 ite 1 309 186 527
+529 next 1 186 528
+530 not 7 284
+531 and 7 530 517
+532 and 7 531 521
+533 and 7 290 532
+534 ite 1 533 8 2
+535 and 7 530 507
+536 and 7 290 535
+537 ite 1 536 8 534
+538 ite 1 526 2 537
+539 ite 1 309 194 538
+540 next 1 194 539
+541 input 1 main__error_mechSensor_defect__fail__state_probabilisticAssignment_541
+542 eq 7 541 2
+543 eq 7 541 8
+544 or 7 543 542
+545 constraint 544
+546 constd 7 1
+547 not 7 546
+548 eq 7 203 200
+549 eq 7 203 8
+550 or 7 549 548
+551 and 7 550 547
+552 ite 1 551 203 541
+553 ite 1 277 203 552
+554 next 1 203 553
+555 input 1 main__error_mechSensor_wrong__fail__state_probabilisticAssignment_555
+556 eq 7 555 2
+557 eq 7 555 8
+558 or 7 557 556
+559 constraint 558
+560 eq 7 211 200
+561 eq 7 211 8
+562 or 7 561 560
+563 and 7 562 547
+564 ite 1 563 211 555
+565 input 1 main__error_mechSensor_wrong__fail__state_probabilisticAssignment_565
+566 eq 7 565 8
+567 eq 7 565 2
+568 or 7 567 566
+569 constraint 568
+570 and 7 278 546
+571 ite 1 570 565 564
+572 and 7 278 547
+573 ite 1 572 211 571
+574 next 1 211 573
+575 input 1 main__error_magSensor_defect__fail__state_probabilisticAssignment_575
+576 eq 7 575 2
+577 eq 7 575 8
+578 or 7 577 576
+579 constraint 578
+580 eq 7 219 200
+581 eq 7 219 8
+582 or 7 581 580
+583 and 7 582 547
+584 ite 1 583 219 575
+585 ite 1 279 219 584
+586 next 1 219 585
+587 input 1 main__error_magSensor_wrong__fail__state_probabilisticAssignment_587
+588 eq 7 587 2
+589 eq 7 587 8
+590 or 7 589 588
+591 constraint 590
+592 eq 7 227 200
+593 eq 7 227 8
+594 or 7 593 592
+595 and 7 594 547
+596 ite 1 595 227 587
+597 input 1 main__error_magSensor_wrong__fail__state_probabilisticAssignment_597
+598 eq 7 597 8
+599 eq 7 597 2
+600 or 7 599 598
+601 constraint 600
+602 and 7 280 546
+603 ite 1 602 597 596
+604 and 7 280 547
+605 ite 1 604 227 603
+606 next 1 227 605
+607 input 1 main__error_crashDetectionA_wrong__fail__state_probabilisticAssignment_607
+608 eq 7 607 2
+609 eq 7 607 8
+610 or 7 609 608
+611 constraint 610
+612 eq 7 235 200
+613 eq 7 235 8
+614 or 7 613 612
+615 and 7 614 547
+616 ite 1 615 235 607
+617 input 1 main__error_crashDetectionA_wrong__fail__state_probabilisticAssignment_617
+618 eq 7 617 8
+619 eq 7 617 2
+620 or 7 619 618
+621 constraint 620
+622 and 7 281 546
+623 ite 1 622 617 616
+624 and 7 281 547
+625 ite 1 624 235 623
+626 next 1 235 625
+627 input 1 main__error_crashDetectionB_wrong__fail__state_probabilisticAssignment_627
+628 eq 7 627 2
+629 eq 7 627 8
+630 or 7 629 628
+631 constraint 630
+632 eq 7 243 200
+633 eq 7 243 8
+634 or 7 633 632
+635 and 7 634 547
+636 ite 1 635 243 627
+637 input 1 main__error_crashDetectionB_wrong__fail__state_probabilisticAssignment_637
+638 eq 7 637 8
+639 eq 7 637 2
+640 or 7 639 638
+641 constraint 640
+642 and 7 282 546
+643 ite 1 642 637 636
+644 and 7 282 547
+645 ite 1 644 243 643
+646 next 1 243 645
+647 input 1 main__error_crashDetectionMonitor_wrong__fail__state_probabilisticAssignment_647
+648 eq 7 647 2
+649 eq 7 647 8
+650 or 7 649 648
+651 constraint 650
+652 eq 7 251 200
+653 eq 7 251 8
+654 or 7 653 652
+655 and 7 654 547
+656 ite 1 655 251 647
+657 input 1 main__error_crashDetectionMonitor_wrong__fail__state_probabilisticAssignment_657
+658 eq 7 657 8
+659 eq 7 657 2
+660 or 7 659 658
+661 constraint 660
+662 and 7 283 546
+663 ite 1 662 657 656
+664 and 7 283 547
+665 ite 1 664 251 663
+666 next 1 251 665
+667 input 1 main__error_airbag_selfIgnition__fail__state_probabilisticAssignment_667
+668 eq 7 667 2
+669 eq 7 667 8
+670 or 7 669 668
+671 constraint 670
+672 eq 7 259 200
+673 eq 7 259 8
+674 or 7 673 672
+675 and 7 674 547
+676 ite 1 675 259 667
+677 ite 1 284 259 676
+678 next 1 259 677
+679 not 7 267
+680 eq 7 50 8
+681 eq 7 58 8
+682 eq 7 77 8
+683 eq 7 85 8
+684 eq 7 129 8
+685 eq 7 145 8
+686 eq 7 161 8
+687 eq 7 186 8
+688 and 7 687 686
+689 and 7 688 685
+690 and 7 689 684
+691 and 7 690 683
+692 and 7 691 682
+693 and 7 692 681
+694 and 7 693 680
+695 implies 7 694 679
+696 not 7 695
+697 bad 696

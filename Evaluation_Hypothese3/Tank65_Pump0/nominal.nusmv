@@ -1,0 +1,175 @@
+MODULE ____INITCOMP__ (  )
+VAR
+state : (0) .. (1);
+ASSIGN
+init ( state ) := 1;
+TRANS TRUE -> next(state) = 0;
+
+MODULE __Water_Tank__CX47__Delay2__comp ( __INITCOMP____state,Water_Tank__CX47__AND2__8800012 )
+VAR
+state__0 : (0) .. (1);
+ASSIGN
+init ( state__0 ) := 0;
+TRANS (__INITCOMP____state = 0) & (Water_Tank__CX47__AND2__8800012) -> next(state__0) = 1;
+TRANS (__INITCOMP____state = 0) & (!Water_Tank__CX47__AND2__8800012) -> next(state__0) = 0;
+TRANS __INITCOMP____state = 1 -> next(state__0) = state__0;
+
+MODULE __Water_Tank__CX47__Pump__comp ( __INITCOMP____state,Water_Tank__CX47__Pump__comp__COMP__sumUp )
+VAR
+state : real;
+INVAR state>= 0.0;
+INVAR state <= 5.0;
+VAR
+ASSIGN
+init ( state ) := 0.0;
+TRANS (__INITCOMP____state = 0) & ((Water_Tank__CX47__Pump__comp__COMP__sumUp < 0.0) & (!FALSE)) -> next(state) = 0.0;
+TRANS (__INITCOMP____state = 0) & ((Water_Tank__CX47__Pump__comp__COMP__sumUp > 5.0) & (!FALSE)) -> next(state) = 5.0;
+TRANS (__INITCOMP____state = 0) & (((!(Water_Tank__CX47__Pump__comp__COMP__sumUp < 0.0)) & (!(Water_Tank__CX47__Pump__comp__COMP__sumUp > 5.0))) & (!FALSE)) -> next(state) = Water_Tank__CX47__Pump__comp__COMP__sumUp;
+TRANS (__INITCOMP____state = 0) & (FALSE) -> next(state) = 0.0;
+TRANS __INITCOMP____state = 1 -> next(state) = state;
+
+MODULE __Water_Tank__CX47__WaterTank__comp ( __INITCOMP____state,Water_Tank__CX47__WaterTank__comp__COMP__sumUp )
+VAR
+state : real;
+INVAR state>= 0.0;
+INVAR state <= 100.0;
+VAR
+ASSIGN
+init ( state ) := 65.0;
+TRANS (__INITCOMP____state = 0) & ((Water_Tank__CX47__WaterTank__comp__COMP__sumUp < 0.0) & (!FALSE)) -> next(state) = 0.0;
+TRANS (__INITCOMP____state = 0) & ((Water_Tank__CX47__WaterTank__comp__COMP__sumUp > 100.0) & (!FALSE)) -> next(state) = 100.0;
+TRANS (__INITCOMP____state = 0) & (((!(Water_Tank__CX47__WaterTank__comp__COMP__sumUp < 0.0)) & (!(Water_Tank__CX47__WaterTank__comp__COMP__sumUp > 100.0))) & (!FALSE)) -> next(state) = Water_Tank__CX47__WaterTank__comp__COMP__sumUp;
+TRANS (__INITCOMP____state = 0) & (FALSE) -> next(state) = 65.0;
+TRANS __INITCOMP____state = 1 -> next(state) = state;
+
+MODULE __global_model_input_Water_Tank__CX47__InFlow__CX10____comp ( __INITCOMP____state )
+VAR
+state : real;
+INVAR state>= 0.0;
+INVAR state <= 3.0;
+VAR
+INIT state>= 0.0;
+INIT  state <= 3.0;
+ASSIGN
+TRANS (TRUE) -> next(state) >= 0.0 & next(state) <= 3.0;
+
+MODULE __Water_Tank__CX47__PumpFails__CX47__Pump__CX32__loses__CX32__power__CX47__Trigger__CX32__FIP__fmObs ( Water_Tank__CX47__PumpFails__CX47__Pump__CX32__loses__CX32__power__CX47__Trigger__CX32__FIP__COMP__fails )
+VAR
+state : (0) .. (1);
+ASSIGN
+init ( state ) := 0;
+TRANS (!Water_Tank__CX47__PumpFails__CX47__Pump__CX32__loses__CX32__power__CX47__Trigger__CX32__FIP__COMP__fails) | (state = 1) -> next(state) = state;
+TRANS Water_Tank__CX47__PumpFails__CX47__Pump__CX32__loses__CX32__power__CX47__Trigger__CX32__FIP__COMP__fails -> next(state) = 1;
+TRANS FALSE -> next(state) = state;
+
+MODULE __Water_Tank__CX47__WaterTankLeak__CX47__Leak__CX47__Trigger__CX32__FIP__fmObs ( Water_Tank__CX47__WaterTankLeak__CX47__Leak__CX47__Trigger__CX32__FIP__COMP__fails )
+VAR
+state : (0) .. (1);
+ASSIGN
+init ( state ) := 0;
+TRANS (!Water_Tank__CX47__WaterTankLeak__CX47__Leak__CX47__Trigger__CX32__FIP__COMP__fails) | (state = 1) -> next(state) = state;
+TRANS Water_Tank__CX47__WaterTankLeak__CX47__Leak__CX47__Trigger__CX32__FIP__COMP__fails -> next(state) = 1;
+TRANS FALSE -> next(state) = state;
+
+MODULE __Water_Tank__CX47__PumpFails__CX47__Pump__CX32__loses__CX32__power__CX47__Trigger__CX32__FIP (  )
+VAR
+fail__state : (0) .. (1);
+INIT fail__state>= 0;
+INIT  fail__state <= 1;
+ASSIGN
+TRANS FALSE -> next(fail__state) = fail__state;
+TRANS fail__state = 0 -> (next(fail__state) = 0) | (next(fail__state) = 1);
+TRANS fail__state = 1 -> next(fail__state) = fail__state;
+
+MODULE __Water_Tank__CX47__WaterTankLeak__CX47__Leak__CX47__Trigger__CX32__FIP (  )
+VAR
+fail__state : (0) .. (1);
+INIT fail__state>= 0;
+INIT  fail__state <= 1;
+ASSIGN
+TRANS FALSE -> next(fail__state) = fail__state;
+TRANS fail__state = 0 -> (next(fail__state) = 0) | (next(fail__state) = 1);
+TRANS fail__state = 1 -> next(fail__state) = fail__state;
+MODULE main
+VAR
+__INITCOMP__ : ____INITCOMP__();
+Water_Tank__CX47__Delay2__comp : __Water_Tank__CX47__Delay2__comp(__INITCOMP__.state,Water_Tank__CX47__AND2__8800012);
+Water_Tank__CX47__Pump__comp : __Water_Tank__CX47__Pump__comp(__INITCOMP__.state,Water_Tank__CX47__Pump__comp__COMP__sumUp);
+Water_Tank__CX47__WaterTank__comp : __Water_Tank__CX47__WaterTank__comp(__INITCOMP__.state,Water_Tank__CX47__WaterTank__comp__COMP__sumUp);
+global_model_input_Water_Tank__CX47__InFlow__CX10____comp : __global_model_input_Water_Tank__CX47__InFlow__CX10____comp(__INITCOMP__.state);
+Water_Tank__CX47__PumpFails__CX47__Pump__CX32__loses__CX32__power__CX47__Trigger__CX32__FIP__fmObs : __Water_Tank__CX47__PumpFails__CX47__Pump__CX32__loses__CX32__power__CX47__Trigger__CX32__FIP__fmObs(Water_Tank__CX47__PumpFails__CX47__Pump__CX32__loses__CX32__power__CX47__Trigger__CX32__FIP__COMP__fails);
+Water_Tank__CX47__WaterTankLeak__CX47__Leak__CX47__Trigger__CX32__FIP__fmObs : __Water_Tank__CX47__WaterTankLeak__CX47__Leak__CX47__Trigger__CX32__FIP__fmObs(Water_Tank__CX47__WaterTankLeak__CX47__Leak__CX47__Trigger__CX32__FIP__COMP__fails);
+Water_Tank__CX47__PumpFails__CX47__Pump__CX32__loses__CX32__power__CX47__Trigger__CX32__FIP : __Water_Tank__CX47__PumpFails__CX47__Pump__CX32__loses__CX32__power__CX47__Trigger__CX32__FIP();
+Water_Tank__CX47__WaterTankLeak__CX47__Leak__CX47__Trigger__CX32__FIP : __Water_Tank__CX47__WaterTankLeak__CX47__Leak__CX47__Trigger__CX32__FIP();
+
+DEFINE 
+  Water_Tank__CX47__AND2__8800012 := (Water_Tank__CX47__OR1__9600012) & (Water_Tank__CX47__Compare__CX10__To__CX32__Constant4__CX47__Compare__16400012);
+
+DEFINE 
+  Water_Tank__CX47__Add__9200012 := 0 + Water_Tank__CX47__InFlow__CX10____9400012 - Water_Tank__CX47__Pump__8400012;
+
+DEFINE 
+  Water_Tank__CX47__Delay2__10500012 := Water_Tank__CX47__Delay2__comp.state__0 != 0;
+
+DEFINE 
+  Water_Tank__CX47__OR1__9600012 := (Water_Tank__CX47__Delay2__10500012) | (Water_Tank__CX47__Compare__CX10__To__CX32__Constant1__CX47__Compare__17100012);
+
+DEFINE 
+  Water_Tank__CX47__Pump__8400012 := Water_Tank__CX47__Pump__comp.state;
+
+DEFINE 
+  Water_Tank__CX47__Switch__8500012 := ((Water_Tank__CX47__PumpFails__CX47__Pump__CX32__loses__CX32__power__CX47__Switch__5700012)?(0.5):(-1.0));
+
+DEFINE 
+  Water_Tank__CX47__WaterTank__9700012 := Water_Tank__CX47__WaterTank__comp.state;
+
+DEFINE 
+  Water_Tank__CX47__Compare__CX10__To__CX32__Constant1__CX47__Compare__17100012 := Water_Tank__CX47__WaterTank__9700012 >= 80.0;
+
+DEFINE 
+  Water_Tank__CX47__Compare__CX10__To__CX32__Constant4__CX47__Compare__16400012 := Water_Tank__CX47__WaterTank__9700012 > 20.0;
+
+DEFINE 
+  Water_Tank__CX47__PumpFails__CX47__Pump__CX32__loses__CX32__power__CX47__Switch__5700012 := ((Water_Tank__CX47__PumpFails__CX47__Pump__CX32__loses__CX32__power__CX47__Trigger__CX32__FIP__5600012)?(FALSE):(Water_Tank__CX47__AND2__8800012));
+
+DEFINE 
+  Water_Tank__CX47__PumpFails__CX47__Pump__CX32__loses__CX32__power__CX47__Trigger__CX32__FIP__5600012 := Water_Tank__CX47__PumpFails__CX47__Pump__CX32__loses__CX32__power__CX47__Trigger__CX32__FIP__COMP__fails;
+
+DEFINE 
+  Water_Tank__CX47__WaterTankLeak__CX47__Leak__CX47__Add__7900012 := 0 + Water_Tank__CX47__Add__9200012 + Water_Tank__CX47__WaterTankLeak__CX47__Leak__CX47__Switch__7800012;
+
+DEFINE 
+  Water_Tank__CX47__WaterTankLeak__CX47__Leak__CX47__Switch__7800012 := ((Water_Tank__CX47__WaterTankLeak__CX47__Leak__CX47__Trigger__CX32__FIP__7500012)?(-3):(0));
+
+DEFINE 
+  Water_Tank__CX47__WaterTankLeak__CX47__Leak__CX47__Trigger__CX32__FIP__7500012 := Water_Tank__CX47__WaterTankLeak__CX47__Leak__CX47__Trigger__CX32__FIP__COMP__fails;
+
+DEFINE 
+  Water_Tank__CX47__FailureConditionObserver__CX47__FailureCondition__CX47__FC_FailureCondition_ausput__3300012 := !Water_Tank__CX47__FailureConditionObserver__CX47__FailureCondition__CX47__Logical__CX10__Operator__3400012;
+
+DEFINE 
+  Water_Tank__CX47__FailureConditionObserver__CX47__FailureCondition__CX47__Logical__CX10__Operator__3400012 := (Water_Tank__CX47__FailureConditionObserver__CX47__FailureCondition__CX47__Compare__CX10__To__CX32__Constant__CX47__Compare__2100012) & (Water_Tank__CX47__FailureConditionObserver__CX47__FailureCondition__CX47__Compare__CX10__To__CX32__Constant1__CX47__Compare__2900012);
+
+DEFINE 
+  Water_Tank__CX47__FailureConditionObserver__CX47__FailureCondition__CX47__Compare__CX10__To__CX32__Constant__CX47__Compare__2100012 := Water_Tank__CX47__WaterTank__9700012 < 100.0;
+
+DEFINE 
+  Water_Tank__CX47__FailureConditionObserver__CX47__FailureCondition__CX47__Compare__CX10__To__CX32__Constant1__CX47__Compare__2900012 := Water_Tank__CX47__WaterTank__9700012 > 0.0;
+
+DEFINE 
+  Water_Tank__CX47__InFlow__CX10____9400012 := global_model_input_Water_Tank__CX47__InFlow__CX10____comp.state;
+
+DEFINE 
+  Water_Tank__CX47__Pump__comp__COMP__sumUp := Water_Tank__CX47__Pump__comp.state + 1.0 * Water_Tank__CX47__Switch__8500012;
+
+DEFINE 
+  Water_Tank__CX47__WaterTank__comp__COMP__sumUp := Water_Tank__CX47__WaterTank__comp.state + 1.0 * Water_Tank__CX47__WaterTankLeak__CX47__Leak__CX47__Add__7900012;
+
+DEFINE 
+  Water_Tank__CX47__PumpFails__CX47__Pump__CX32__loses__CX32__power__CX47__Trigger__CX32__FIP__COMP__fails := Water_Tank__CX47__PumpFails__CX47__Pump__CX32__loses__CX32__power__CX47__Trigger__CX32__FIP.fail__state = 1;
+
+DEFINE 
+  Water_Tank__CX47__WaterTankLeak__CX47__Leak__CX47__Trigger__CX32__FIP__COMP__fails := Water_Tank__CX47__WaterTankLeak__CX47__Leak__CX47__Trigger__CX32__FIP.fail__state = 1;
+
+INVARSPEC ( Water_Tank__CX47__PumpFails__CX47__Pump__CX32__loses__CX32__power__CX47__Trigger__CX32__FIP.fail__state = 0  & Water_Tank__CX47__WaterTankLeak__CX47__Leak__CX47__Trigger__CX32__FIP.fail__state = 0  -> (__INITCOMP__.state = 1 | !(Water_Tank__CX47__FailureConditionObserver__CX47__FailureCondition__CX47__FC_FailureCondition_ausput__3300012
+)))

@@ -1,0 +1,7 @@
+read_model -i airbag_spec3.nusmv
+flatten_hierarchy
+encode_variables
+build_boolean_model
+write_aiger_model -b -p airbag_spec3
+write_aiger_model -p airbag_spec3
+quit

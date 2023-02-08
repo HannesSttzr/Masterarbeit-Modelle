@@ -1,0 +1,4 @@
+read_model -i doubleFalse.nusmv
+go_msat
+check_invar
+quit

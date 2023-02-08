@@ -1,0 +1,8 @@
+
+component Comp
+	state : [0.0..2.1234567891233456] init 1.0;
+	(state <= 1.0) -> state' = state * 2.0;
+	(state > 1.0) -> state' = state / 3.0;
+endcomponent
+
+SPEC AG (Comp.state != (16.0/27.0));
